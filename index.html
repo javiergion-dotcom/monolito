@@ -3,71 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONOLITO - CONTROL PROFESIONAL</title>
+    <title>MONOLITO - CREADO POR J. GION</title>
     <style>
-        :root {
-            --fondo: #f8fafc;
-            --azul-pasta: #94a3b8;
-            --crema-pasta: #f1f5f9;
-            --rojo-pasta: #fda4af;
-            --texto: #334155;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--fondo); color: var(--texto); margin: 0; padding: 20px; }
-        .wrapper { max-width: 450px; margin: auto; }
-        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        body { background-color: #f7f3ed; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .tablet { width: 100%; max-width: 450px; background: #fdfbf9; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; display: flex; flex-direction: column; min-height: 90vh; }
         
-        h1 { font-size: 1.2rem; text-align: center; color: var(--azul-pasta); text-transform: uppercase; letter-spacing: 2px; }
+        .header { background: #b04a33; color: white; text-align: center; padding: 15px; }
+        .header h1 { margin: 0; font-size: 2rem; letter-spacing: 3px; font-weight: bold; }
         
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        .btn-azul { background: var(--azul-pasta); color: white; }
-        .btn-rojo { background: var(--rojo-pasta); color: white; }
+        .info-bar { background: #f1ede4; padding: 10px; text-align: center; border-bottom: 1px solid #e2ddd3; font-size: 0.9rem; color: #333; }
+
+        .menu-container { padding: 20px 10px; flex-grow: 1; }
+
+        .item { display: flex; align-items: center; margin-bottom: 15px; padding: 10px; position: relative; cursor: pointer; }
+        .brush { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 1; opacity: 0.8; border-radius: 50px 10px 40px 5px; }
+        .content { position: relative; z-index: 2; display: flex; align-items: center; width: 100%; padding-left: 15px; }
         
-        input { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1.2rem; text-align: center; box-sizing: border-box; margin-bottom: 15px; }
-        
-        .incidencia-box { background: #fff1f2; border: 1px solid #fecaca; border-radius: 10px; padding: 15px; color: #b91c1c; font-weight: 500; margin-bottom: 20px; }
+        .icon { width: 45px; height: 45px; margin-right: 20px; background: white; border-radius: 5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .text { font-size: 1.6rem; font-weight: bold; color: #2d2d2d; letter-spacing: 1px; }
+
+        .bg-libro { background: #adc2c2; }
+        .bg-prov { background: #d9b8b0; }
+        .bg-ventas { background: #e9dec1; }
+        .bg-docs { background: #d6cbc1; }
+
+        /* FIRMA DEL AUTOR */
+        .footer { background: #f1ede4; padding: 20px; text-align: center; border-top: 1px solid #e2ddd3; }
+        .signature { font-family: 'Georgia', serif; font-style: italic; font-size: 1.1rem; color: #b04a33; font-weight: bold; }
+        .credits { font-size: 0.7rem; color: #887; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <div id="login">
-        <h1>Acceso Monolito</h1>
-        <div class="card">
-            <input type="number" id="pin" placeholder="Introduce tu código">
-            <button class="btn btn-azul" onclick="entrar()">ENTRAR AL SISTEMA</button>
+<div class="tablet">
+    <div class="header"><h1>MONOLITO</h1></div>
+    <div class="info-bar">Administrador: <strong>Javier</strong></div>
+
+    <div class="menu-container">
+        <div class="item">
+            <div class="brush bg-libro"></div>
+            <div class="content">
+                <div class="icon">📘</div>
+                <div class="text">LIBRO</div>
+            </div>
+        </div>
+
+        <div class="item" onclick="alert('Pendiente: 1 caja tónica Cabanella')">
+            <div class="brush bg-prov"></div>
+            <div class="content">
+                <div class="icon">📦</div>
+                <div class="text">PROVEEDORES</div>
+            </div>
+        </div>
+
+        <div class="item">
+            <div class="brush bg-ventas"></div>
+            <div class="content">
+                <div class="icon">💰</div>
+                <div class="text">VENTAS</div>
+            </div>
+        </div>
+
+        <div class="item">
+            <div class="brush bg-docs"></div>
+            <div class="content">
+                <div class="icon">💼</div>
+                <div class="text">DOCUMENTOS</div>
+            </div>
         </div>
     </div>
 
-    <div id="main" style="display:none;">
-        <h1>Panel de Gestión</h1>
-        
-        <div class="incidencia-box">
-            ⚠️ AVISO: Cabanella debe 1 caja de tónica.
-        </div>
-
-        <div class="card">
-            <h2 style="font-size: 1rem; margin-top:0;">REPOSICIÓN Y COMPRAS</h2>
-            <button class="btn btn-azul" onclick="alert('Accediendo a Pedidos...')">GESTIONAR PROVEEDORES</button>
-        </div>
-
-        <div class="card">
-            <h2 style="font-size: 1rem; margin-top:0;">INCIDENCIAS CRÍTICAS</h2>
-            <button class="btn btn-rojo" onclick="alert('Abriendo Incidencias...')">NOTIFICAR FALLO</button>
-        </div>
+    <div class="footer">
+        <div class="signature">Creado por J. Gion</div>
+        <div class="credits">Sistema de Gestión Pro • 2026</div>
     </div>
 </div>
-
-<script>
-    function entrar() {
-        const pin = document.getElementById('pin').value;
-        if(pin !== "") {
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('main').style.display = 'block';
-        } else {
-            alert("Por favor, introduce tu código de camarero.");
-        }
-    }
-</script>
 
 </body>
 </html>
