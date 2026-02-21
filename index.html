@@ -5,48 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONOLITO - J. GION</title>
     <style>
-        body { background-color: #f2ede4; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
-        .contenedor { width: 100%; max-width: 450px; min-height: 100vh; background: #fdfaf5; display: flex; flex-direction: column; }
+        body { background-color: #f2ede4; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .pantalla { width: 100%; max-width: 450px; min-height: 100vh; background: #fdfaf5; margin: auto; display: flex; flex-direction: column; }
         
-        .header { background: #963a25; padding: 25px 10px; text-align: center; }
-        .header h1 { color: white; margin: 0; font-size: 2.2rem; letter-spacing: 4px; font-weight: 900; }
+        /* Cabezal */
+        .header { background: #963a25; padding: 25px 10px; text-align: center; color: white; }
+        .header h1 { margin: 0; font-size: 2.2rem; letter-spacing: 4px; }
 
-        .menu { padding: 40px 20px; flex-grow: 1; }
+        .menu { padding: 30px 20px; flex-grow: 1; }
 
-        /* EL EFECTO DE PINCELADA REAL */
+        /* Estilo Pincelada */
         .bloque-pincel {
-            position: relative;
-            margin-bottom: 30px;
-            height: 75px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            position: relative; margin-bottom: 25px; height: 75px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
-
         .fondo-trazo {
-            position: absolute;
-            width: 105%;
-            height: 120%;
-            z-index: 1;
-            /* Formas de mancha de pintura */
+            position: absolute; width: 105%; height: 120%; z-index: 1;
             border-radius: 40% 70% 30% 80% / 60% 30% 70% 40%;
-            filter: blur(0.5px);
         }
+        .etiqueta { position: relative; z-index: 2; font-size: 1.6rem; font-weight: 800; color: #2a2a2a; }
 
-        .etiqueta {
-            position: relative;
-            z-index: 2;
-            font-size: 1.7rem;
-            font-weight: 800;
-            color: #2a2a2a;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .color-1 { background: #b2c9c9; }
+        .color-2 { background: #e0beb6; }
+        .color-3 { background: #ebdcb9; }
+        .color-4 { background: #d9d0c5; }
 
-        /* Colores pastel aplicados a las manchas */
-        .color-1 { background: #b2c9c9; border-radius: 30% 80% 40% 70% / 50% 30% 80% 40%; }
-        .color-2 { background: #e0beb6; border-radius: 70% 40% 80% 30% / 40% 70% 30% 60%; }
-        .color
+        /* Capas de contenido (ocultas al inicio) */
+        .seccion-detalle { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .btn-volver { background: #963a25; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+
+        .pie { padding: 20px; text-align: center; background: #f2ede4; border-top: 1px solid #e5dfd3; }
+        .autor { font-family: 'Georgia', serif; font-style: italic; font-size: 1.3rem; color: #963a25; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="pantalla">
+    <div class="header"><h1>MONOLITO</h1></div>
+
+    <div id="menu-principal" class="menu">
+        <div class="bloque-pincel" onclick="mostrar('libro')">
+            <div class="fondo-trazo color-1"></div>
+            <div class="etiqueta">📘 LIBRO</div>
+        </div>
+
+        <div class="bloque-pincel" onclick="mostrar('proveedores')">
+            <div class="fondo-trazo color-2"></div>
+            <div class="etiqueta">📦 PROVEEDORES</div>
+        </div>
+
+        <div class="bloque-pincel" onclick="mostrar('ventas')">
+            <div class="fondo-trazo color-3"></div>
+            <div class="etiqueta">💰 VENTAS</div>
+        </div>
+    </div>
+
+    <div id="seccion-libro" class="seccion-detalle">
+        <button class="btn-volver" onclick="irAlMenu()">⬅ VOLVER</button>
+        <h2>Artículos en Stock</h2>
+        <p>Cargando lista de existencias...</p>
+    </div>
+
+    <div id="seccion-proveedores" class="seccion-detalle">
+        <button class="btn-volver" onclick="irAlMenu()">⬅ VOLVER</button>
+        <h2>Control de Pedidos</h2>
+        <div style="background: #fff1f2; padding: 15px; border-left: 5px solid #b91c1c;">
+            <strong>INCIDENCIA:</strong> Cabanella debe 1 caja de tónica.
+        </div>
+        <p style="margin-top: 20px;">• Mahou<br>• Solán de Cabras<br>• Pepsi</p>
+    </div>
+
+    <div class="pie">
+        <div class="autor">Creado por J. Gion</div>
+    </div>
+</div>
+
+<script>
+    function mostrar(id) {
+        document.getElementById('menu-principal').style.display = 'none';
+        document.querySelectorAll('.seccion-detalle').forEach(s => s.style.display = 'none');
+        document.getElementById('seccion-' + id).style.display = 'block';
+    }
+
+    function irAlMenu() {
+        document.getElementById('menu-principal').style.display = 'block';
+        document.querySelectorAll('.seccion-detalle').forEach(s => s.style.display = 'none');
+    }
+</script>
+
+</body>
+</html>
