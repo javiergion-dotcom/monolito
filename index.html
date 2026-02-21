@@ -1,102 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>MONOLITO GPT PRO — Javier Gion</title>
+    <meta charset="UTF-8">
+    <title>MONOLITO GPT-PRO</title>
 </head>
+<body>
+    <h1>Gestión de Artículos - MONOLITO</h1>
+    <div id="cuadro-articulos">
+        </div>
 
-<body style="background:#0f172a;color:white;font-family:Arial;padding:20px;">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<h1>MONOLITO GPT PRO — Javier Gion</h1>
+        // CONFIGURACIÓN DE TU FIREBASE (Asegúrate de que estos datos son los tuyos)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "monolito-ed87d.firebaseapp.com",
+            projectId: "monolito-ed87d",
+            storageBucket: "monolito-ed87d.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
 
-<div id="articulos">
-Cargando artículos...
-</div>
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-<script type="module">
+        async function cargarArticulos() {
+            try {
+                // Solo buscamos en la colección "articulos"
+                const querySnapshot = await getDocs(collection(db, "articulos"));
+                console.log("Conexión exitosa. Cargando artículos...");
+                
+                const contenedor = document.getElementById("cuadro-articulos");
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const p = document.createElement("p");
+                    p.textContent = `Artículo: ${data.nombre}`;
+                    contenedor.appendChild(p);
+                });
+            } catch (e) {
+                console.error("Error al cargar artículos: ", e);
+            }
+        }
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-  getFirestore,
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-
-const firebaseConfig = {
-
-  apiKey: "AIzaSyAxbU-eWFekfBSMfwq8sJikpnbE8sOtr-s",
-
-  authDomain: "monolito-ed87d.firebaseapp.com",
-
-  projectId: "monolito-ed87d",
-
-  storageBucket: "monolito-ed87d.firebasestorage.app",
-
-  messagingSenderId: "737849584362",
-
-  appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
-
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-
-async function cargarArticulos() {
-
-  const contenedor = document.getElementById("articulos");
-
-  contenedor.innerHTML = "Conectando con Firestore...";
-
-  try {
-
-    const querySnapshot = await getDocs(collection(db, "articulos"));
-
-    if (querySnapshot.empty) {
-
-      contenedor.innerHTML = "No hay artículos en la base de datos.";
-
-      return;
-
-    }
-
-    contenedor.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-
-      const data = doc.data();
-
-      const div = document.createElement("div");
-
-      div.style.padding = "10px";
-      div.style.margin = "5px";
-      div.style.background = "#1e293b";
-
-      div.innerHTML =
-        "<b>" + data.nombre + "</b> — " +
-        (data.precio ?? "");
-
-      contenedor.appendChild(div);
-
-    });
-
-  }
-  catch (error) {
-
-    contenedor.innerHTML =
-      "Error conectando con Firestore: " + error;
-
-  }
-
-}
-
-cargarArticulos();
-
-</script>
-
+        cargarArticulos();
+    </script>
 </body>
 </html>
