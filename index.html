@@ -2,67 +2,157 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>MONOLITO GPT-Pro</title>
+<title>MONOLITO</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 
-body {
-  background:#fdfaf5;
-  font-family:Arial;
-  padding:20px;
+body{
+ background:#fdfaf5;
+ font-family:Arial;
+ margin:0;
+ padding:0;
 }
 
-.boton {
-  padding:12px;
-  margin:6px;
-  border:none;
-  background:#e8dfd1;
-  border-radius:20px;
-  font-size:16px;
+#barra{
+ background:#e8dfd1;
+ padding:15px;
+ font-size:22px;
 }
 
-.modulo {
-  background:white;
-  padding:15px;
-  margin-top:15px;
-  border-radius:10px;
-  display:none;
+#contenido{
+ padding:20px;
 }
 
-.item {
-  padding:8px;
-  margin:5px;
-  background:#f1ece4;
-  border-radius:8px;
+.boton{
+ display:block;
+ width:100%;
+ padding:18px;
+ margin:10px 0;
+ font-size:18px;
+ border:none;
+ border-radius:20px;
+ background:#e8dfd1;
+}
+
+.boton:active{
+ background:#d6ccbb;
+}
+
+.modulo{
+ display:none;
+}
+
+.item{
+ background:#f1ece4;
+ padding:10px;
+ margin:5px 0;
+ border-radius:10px;
+}
+
+input{
+ width:100%;
+ padding:12px;
+ margin:5px 0;
+ font-size:16px;
+}
+
+#estado{
+ position:fixed;
+ bottom:0;
+ width:100%;
+ background:#e8dfd1;
+ padding:10px;
+ font-size:14px;
 }
 
 </style>
 
 </head>
+
 <body>
 
-<h2>MONOLITO GPT-Pro</h2>
+<div id="barra">
+MONOLITO
+</div>
 
-<button class="boton" onclick="abrirArticulos()">Artículos</button>
-<button class="boton" onclick="abrirRapel()">RAPPEL</button>
+<div id="contenido">
 
-<div id="articulos" class="modulo">
+<div id="portada">
+
+<button class="boton" onclick="abrirModulo('libro')">
+📘 LIBRO
+</button>
+
+<button class="boton" onclick="abrirModulo('proveedores')">
+📦 PROVEEDORES
+</button>
+
+<button class="boton" onclick="abrirModulo('pedidos')">
+🧾 PEDIDOS
+</button>
+
+<button class="boton" onclick="abrirModulo('ventas')">
+💰 VENTAS
+</button>
+
+<button class="boton" onclick="abrirModulo('rapel')">
+📊 RAPPEL
+</button>
+
+<button class="boton" onclick="abrirModulo('documentos')">
+📁 DOCUMENTOS
+</button>
+
+</div>
+
+<div id="libro" class="modulo">
+
+<button class="boton" onclick="volver()">← Volver</button>
+
+<h3>LIBRO</h3>
 
 <input id="nombreArticulo" placeholder="Nombre artículo">
-<button class="boton" onclick="guardarArticulo()">Guardar artículo</button>
+
+<button class="boton" onclick="guardarArticulo()">
+Guardar
+</button>
 
 <div id="listaArticulos"></div>
 
 </div>
 
+<div id="proveedores" class="modulo">
+<button class="boton" onclick="volver()">← Volver</button>
+<h3>PROVEEDORES</h3>
+</div>
+
+<div id="pedidos" class="modulo">
+<button class="boton" onclick="volver()">← Volver</button>
+<h3>PEDIDOS</h3>
+</div>
+
+<div id="ventas" class="modulo">
+<button class="boton" onclick="volver()">← Volver</button>
+<h3>VENTAS</h3>
+</div>
+
 <div id="rapel" class="modulo">
-
+<button class="boton" onclick="volver()">← Volver</button>
 <h3>RAPPEL</h3>
+</div>
 
-<div id="listaRapel"></div>
+<div id="documentos" class="modulo">
+<button class="boton" onclick="volver()">← Volver</button>
+<h3>DOCUMENTOS</h3>
+</div>
 
 </div>
 
+<div id="estado">
+Sistema activo
+</div>
 
 <script type="module">
 
@@ -73,16 +163,22 @@ import {
  collection,
  addDoc,
  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 const firebaseConfig = {
 
  apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+
  authDomain: "monolito-ed87d.firebaseapp.com",
+
  projectId: "monolito-ed87d",
+
  storageBucket: "monolito-ed87d.firebasestorage.app",
+
  messagingSenderId: "737849584362",
+
  appId: "1:737849584362:web:3d1821bedcd64080cf8593"
 
 };
@@ -93,112 +189,34 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
+window.abrirModulo = function(id){
 
-window.abrirArticulos = function(){
+ document.getElementById("portada").style.display="none";
 
- ocultarTodo();
+ const modulos=document.getElementsByClassName("modulo");
 
- document.getElementById("articulos").style.display="block";
+ for(let m of modulos){
+  m.style.display="none";
+ }
 
- cargarArticulos();
+ document.getElementById(id).style.display="block";
+
+ if(id==="libro"){
+  cargarArticulos();
+ }
 
 }
 
 
-window.abrirRapel = async function(){
+window.volver = function(){
 
- ocultarTodo();
+ const modulos=document.getElementsByClassName("modulo");
 
- document.getElementById("rapel").style.display="block";
-
- const lista=document.getElementById("listaRapel");
-
- lista.innerHTML="Calculando...";
-
-
- const pedidos = await getDocs(collection(db,"pedidos"));
-
- const rapel = await getDocs(collection(db,"rapel"));
-
-
- let factores={};
-
- rapel.forEach(doc=>{
-
-  factores[doc.id]=doc.data();
-
- });
-
-
- let totales={};
-
-
- pedidos.forEach(doc=>{
-
-  const data=doc.data();
-
-  if(data.lineas){
-
-   data.lineas.forEach(linea=>{
-
-    const art=linea.articulo_id;
-
-    const unidades=linea.unidades;
-
-    if(!totales[art]) totales[art]=0;
-
-    totales[art]+=unidades;
-
-   });
-
-  }
-
- });
-
-
- lista.innerHTML="";
-
- let totalGeneral=0;
-
-
- for(const art in totales){
-
-  if(factores[art]){
-
-   const unidades=totales[art];
-
-   const factor=factores[art].factor_conversion;
-
-   const importe=factores[art].importe_por_litro;
-
-   const litros=unidades*factor;
-
-   const euros=litros*importe;
-
-   totalGeneral+=euros;
-
-   const div=document.createElement("div");
-
-   div.className="item";
-
-   div.innerText=
-
-   art+" → "+litros.toFixed(2)+" L → "+euros.toFixed(2)+" €";
-
-   lista.appendChild(div);
-
-  }
-
+ for(let m of modulos){
+  m.style.display="none";
  }
 
-
- const total=document.createElement("div");
-
- total.className="item";
-
- total.innerHTML="<b>TOTAL RAPPEL: "+totalGeneral.toFixed(2)+" €</b>";
-
- lista.appendChild(total);
+ document.getElementById("portada").style.display="block";
 
 }
 
@@ -207,12 +225,10 @@ window.guardarArticulo = async function(){
 
  const nombre=document.getElementById("nombreArticulo").value;
 
- if(!nombre) return;
+ if(!nombre)return;
 
  await addDoc(collection(db,"articulos"),{
-
   nombre:nombre
-
  });
 
  document.getElementById("nombreArticulo").value="";
@@ -244,17 +260,7 @@ async function cargarArticulos(){
 
 }
 
-
-function ocultarTodo(){
-
- document.getElementById("articulos").style.display="none";
-
- document.getElementById("rapel").style.display="none";
-
-}
-
 </script>
 
 </body>
 </html>
-
