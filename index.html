@@ -5,34 +5,37 @@
 <title>MONOLITO GPT-Pro</title>
 
 <style>
+
 body {
-    background: #fdfaf5;
-    font-family: Arial;
-    padding: 20px;
+  background:#fdfaf5;
+  font-family:Arial;
+  padding:20px;
 }
 
 .boton {
-    padding: 12px;
-    margin: 6px 0;
-    border: none;
-    background: #e8dfd1;
-    border-radius: 20px;
-    font-size: 16px;
+  padding:12px;
+  margin:6px;
+  border:none;
+  background:#e8dfd1;
+  border-radius:20px;
+  font-size:16px;
 }
 
 .modulo {
-    margin-top: 20px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    display: none;
+  background:white;
+  padding:15px;
+  margin-top:15px;
+  border-radius:10px;
+  display:none;
 }
 
-input {
-    padding: 10px;
-    width: 100%;
-    margin-bottom: 10px;
+.item {
+  padding:8px;
+  margin:5px;
+  background:#f1ece4;
+  border-radius:8px;
 }
+
 </style>
 
 </head>
@@ -40,36 +43,213 @@ input {
 
 <h2>MONOLITO GPT-Pro</h2>
 
-<button class="boton" onclick="mostrarArticulos()">Artículos</button>
+<button class="boton" onclick="abrirArticulos()">Artículos</button>
+<button class="boton" onclick="abrirRapel()">RAPPEL</button>
 
 <div id="articulos" class="modulo">
 
-<input id="nombre" placeholder="Nombre del artículo">
+<input id="nombreArticulo" placeholder="Nombre artículo">
+<button class="boton" onclick="guardarArticulo()">Guardar artículo</button>
 
-<button class="boton" onclick="guardar()">Guardar</button>
-
-<div id="lista"></div>
+<div id="listaArticulos"></div>
 
 </div>
 
-<script>
+<div id="rapel" class="modulo">
 
-function mostrarArticulos() {
-document.getElementById("articulos").style.display = "block";
+<h3>RAPPEL</h3>
+
+<div id="listaRapel"></div>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+ getFirestore,
+ collection,
+ addDoc,
+ getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+ apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+ authDomain: "monolito-ed87d.firebaseapp.com",
+ projectId: "monolito-ed87d",
+ storageBucket: "monolito-ed87d.firebasestorage.app",
+ messagingSenderId: "737849584362",
+ appId: "1:737849584362:web:3d1821bedcd64080cf8593"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+
+window.abrirArticulos = function(){
+
+ ocultarTodo();
+
+ document.getElementById("articulos").style.display="block";
+
+ cargarArticulos();
+
 }
 
-function guardar() {
 
-var nombre = document.getElementById("nombre").value;
+window.abrirRapel = async function(){
 
-if (!nombre) return;
+ ocultarTodo();
 
-var div = document.createElement("div");
-div.textContent = nombre;
+ document.getElementById("rapel").style.display="block";
 
-document.getElementById("lista").appendChild(div);
+ const lista=document.getElementById("listaRapel");
 
-document.getElementById("nombre").value = "";
+ lista.innerHTML="Calculando...";
+
+
+ const pedidos = await getDocs(collection(db,"pedidos"));
+
+ const rapel = await getDocs(collection(db,"rapel"));
+
+
+ let factores={};
+
+ rapel.forEach(doc=>{
+
+  factores[doc.id]=doc.data();
+
+ });
+
+
+ let totales={};
+
+
+ pedidos.forEach(doc=>{
+
+  const data=doc.data();
+
+  if(data.lineas){
+
+   data.lineas.forEach(linea=>{
+
+    const art=linea.articulo_id;
+
+    const unidades=linea.unidades;
+
+    if(!totales[art]) totales[art]=0;
+
+    totales[art]+=unidades;
+
+   });
+
+  }
+
+ });
+
+
+ lista.innerHTML="";
+
+ let totalGeneral=0;
+
+
+ for(const art in totales){
+
+  if(factores[art]){
+
+   const unidades=totales[art];
+
+   const factor=factores[art].factor_conversion;
+
+   const importe=factores[art].importe_por_litro;
+
+   const litros=unidades*factor;
+
+   const euros=litros*importe;
+
+   totalGeneral+=euros;
+
+   const div=document.createElement("div");
+
+   div.className="item";
+
+   div.innerText=
+
+   art+" → "+litros.toFixed(2)+" L → "+euros.toFixed(2)+" €";
+
+   lista.appendChild(div);
+
+  }
+
+ }
+
+
+ const total=document.createElement("div");
+
+ total.className="item";
+
+ total.innerHTML="<b>TOTAL RAPPEL: "+totalGeneral.toFixed(2)+" €</b>";
+
+ lista.appendChild(total);
+
+}
+
+
+window.guardarArticulo = async function(){
+
+ const nombre=document.getElementById("nombreArticulo").value;
+
+ if(!nombre) return;
+
+ await addDoc(collection(db,"articulos"),{
+
+  nombre:nombre
+
+ });
+
+ document.getElementById("nombreArticulo").value="";
+
+ cargarArticulos();
+
+}
+
+
+async function cargarArticulos(){
+
+ const lista=document.getElementById("listaArticulos");
+
+ lista.innerHTML="";
+
+ const snap=await getDocs(collection(db,"articulos"));
+
+ snap.forEach(doc=>{
+
+  const div=document.createElement("div");
+
+  div.className="item";
+
+  div.innerText=doc.data().nombre;
+
+  lista.appendChild(div);
+
+ });
+
+}
+
+
+function ocultarTodo(){
+
+ document.getElementById("articulos").style.display="none";
+
+ document.getElementById("rapel").style.display="none";
 
 }
 
@@ -77,3 +257,4 @@ document.getElementById("nombre").value = "";
 
 </body>
 </html>
+
