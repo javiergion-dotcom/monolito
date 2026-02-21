@@ -52,13 +52,13 @@ body {
 <div class="panel">
 
 <div class="columna">
-<button class="boton">Artículos</button>
-<button class="boton">Proveedores</button>
+<button class="boton" onclick="abrirArticulos()">Artículos</button>
+<button class="boton" onclick="abrirProveedores()">Proveedores</button>
 </div>
 
 <div class="columna">
-<button class="boton">Precios de compra</button>
-<button class="boton">Comparador</button>
+<button class="boton" onclick="abrirPrecios()">Precios de compra</button>
+<button class="boton" onclick="abrirComparador()">Comparador</button>
 </div>
 
 </div>
@@ -68,24 +68,25 @@ Creado por J. Gion
 </div>
 
 
-<script type="module">
+<script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// FUNCIONES DE LOS BOTONES
 
-const firebaseConfig = {
-  apiKey: "PON_AQUI_TU_API_KEY",
-  authDomain: "PON_AQUI_TU_AUTH_DOMAIN",
-  projectId: "PON_AQUI_TU_PROJECT_ID",
-  storageBucket: "PON_AQUI_TU_STORAGE_BUCKET",
-  messagingSenderId: "PON_AQUI_TU_MESSAGING_SENDER_ID",
-  appId: "PON_AQUI_TU_APP_ID"
-};
+function abrirArticulos() {
+    alert("Módulo Artículos activado");
+}
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+function abrirProveedores() {
+    alert("Módulo Proveedores activado");
+}
 
-console.log("MONOLITO GPT-Pro conectado a Firebase");
+function abrirPrecios() {
+    alert("Módulo Precios de compra activado");
+}
+
+function abrirComparador() {
+    alert("Módulo Comparador activado");
+}
 
 </script>
 
