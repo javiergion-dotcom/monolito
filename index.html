@@ -2,94 +2,62 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONOLITO - SISTEMA VIVO</title>
+<title>MONOLITO</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Inter:wght@400,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-    body { background-color: #fdfaf5; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; color: #2a2a2a; }
-    .container { max-width: 600px; margin: auto; text-align: center; }
-    
-    h1 { font-weight: 500; margin-bottom: 30px; letter-spacing: 3px; color: #963a25; }
 
-    /* SECCIONES */
-    .pantalla { display: none; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-top: 20px; text-align: left; }
-    .activa { display: block; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+body {
+    background-color: #fdfaf5;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 40px;
+}
 
-    /* BOTONES PINCELADA */
-    .boton-pincel {
-        display: block; width: 80%; margin: 15px auto; padding: 18px;
-        border: none; font-size: 1.2rem; cursor: pointer; color: #1a1a1a;
-        background: linear-gradient(135deg, #e8dfd1, #d9cfbf);
-        box-shadow: 2px 3px 6px rgba(0,0,0,0.08);
-        transition: all 0.2s ease;
-        font-weight: 600;
-    }
+h1 {
+    font-weight: 500;
+}
 
-    /* Formas orgánicas */
-    .p-1 { border-radius: 53% 47% 42% 58% / 60% 38% 62% 40%; }
-    .p-2 { border-radius: 61% 39% 55% 45% / 44% 58% 42% 56%; }
-    .p-3 { border-radius: 48% 52% 39% 61% / 63% 37% 57% 43%; }
+.boton {
+    padding: 15px 30px;
+    margin: 10px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
 
-    .boton-pincel:active { transform: scale(0.95); }
+    background: #e8dfd1;
 
-    .btn-volver { background: #963a25; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+    border-radius: 60% 40% 55% 45% / 45% 60% 40% 55%;
 
-    /* LISTADOS */
-    .item-lista { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-    .alerta { background: #fff1f2; color: #b91c1c; padding: 15px; border-radius: 10px; margin-bottom: 15px; font-weight: bold; border-left: 5px solid #b91c1c; }
+    box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
+}
 
-    .firma { margin-top: 50px; font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #5a534a; opacity: 0.8; }
+.boton:hover {
+    transform: scale(1.05);
+}
+
+.firma {
+    margin-top: 100px;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+}
+
 </style>
 </head>
+
 <body>
 
-<div class="container" id="vista-menu">
-    <h1>MONOLITO</h1>
-    <button class="boton-pincel p-1" onclick="navegar('articulos')">Artículos</button>
-    <button class="boton-pincel p-2" onclick="navegar('proveedores')">Proveedores</button>
-    <button class="boton-pincel p-3" onclick="navegar('precios')">Precios</button>
-    <div class="firma">Creado por J. Gion</div>
+<h1>MONOLITO</h1>
+
+<button class="boton">Artículos</button>
+<button class="boton">Proveedores</button>
+<button class="boton">Precios</button>
+
+<div class="firma">
+Creado por J. Gion
 </div>
-
-<div class="container pantalla" id="vista-articulos">
-    <button class="btn-volver" onclick="irMenu()">← VOLVER</button>
-    <h2>Inventario Actual</h2>
-    <div class="item-lista"><span>Barril Mahou 50L</span> <span>8 unidades</span></div>
-    <div class="item-lista"><span>Tónica Schweppes</span> <span>24 unidades</span></div>
-    <div class="item-lista"><span>Café en grano</span> <span>5 kg</span></div>
-</div>
-
-<div class="container pantalla" id="vista-proveedores">
-    <button class="btn-volver" onclick="irMenu()">← VOLVER</button>
-    <h2>Gestión de Pedidos</h2>
-    <div class="alerta">⚠️ CABANELLA: Debe 1 caja de tónica.</div>
-    <div class="item-lista"><span>Mahou</span> <span>Lunes/Jueves</span></div>
-    <div class="item-lista"><span>Cabanella</span> <span>Martes</span></div>
-    <div class="item-lista"><span>PepsiCo</span> <span>Miércoles</span></div>
-</div>
-
-<div class="container pantalla" id="vista-precios">
-    <button class="btn-volver" onclick="irMenu()">← VOLVER</button>
-    <h2>Tarifas y Rebates</h2>
-    <div class="item-lista"><span>Mahou 5 estrellas</span> <span>1,20€ (Neto)</span></div>
-    <div class="item-lista"><span>Rebate Cerveza</span> <span>10% pactado</span></div>
-</div>
-
-<script>
-    function navegar(id) {
-        document.getElementById('vista-menu').style.display = 'none';
-        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
-        document.getElementById('vista-' + id).classList.add('activa');
-    }
-
-    function irMenu() {
-        document.getElementById('vista-menu').style.display = 'block';
-        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
-    }
-</script>
 
 </body>
 </html>
