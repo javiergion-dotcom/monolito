@@ -2,56 +2,69 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MONOLITO - CONTROL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONOLITO - CONTROL PROFESIONAL</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 20px; color: #1c1e21; }
-        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        h1 { font-size: 24px; text-align: center; color: #1877f2; }
-        input { width: 100%; padding: 15px; font-size: 20px; border-radius: 10px; border: 2px solid #ddd; box-sizing: border-box; margin-bottom: 10px; }
-        .btn { width: 100%; padding: 20px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; margin-bottom: 10px; }
-        .btn-blue { background: #1877f2; }
-        .btn-red { background: #fa3e3e; }
-        .alerta { background: #ffebe9; border-left: 5px solid #fa3e3e; padding: 15px; color: #d93025; font-weight: bold; margin-bottom: 20px; }
+        :root {
+            --fondo: #f8fafc;
+            --azul-pasta: #94a3b8;
+            --crema-pasta: #f1f5f9;
+            --rojo-pasta: #fda4af;
+            --texto: #334155;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--fondo); color: var(--texto); margin: 0; padding: 20px; }
+        .wrapper { max-width: 450px; margin: auto; }
+        .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        
+        h1 { font-size: 1.2rem; text-align: center; color: var(--azul-pasta); text-transform: uppercase; letter-spacing: 2px; }
+        
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-azul { background: var(--azul-pasta); color: white; }
+        .btn-rojo { background: var(--rojo-pasta); color: white; }
+        
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1.2rem; text-align: center; box-sizing: border-box; margin-bottom: 15px; }
+        
+        .incidencia-box { background: #fff1f2; border: 1px solid #fecaca; border-radius: 10px; padding: 15px; color: #b91c1c; font-weight: 500; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div id="login-section">
-    <h1>ENTRADA MONOLITO</h1>
-    <div class="card">
-        <input type="number" id="codigo" placeholder="Introduce tu código">
-        <button class="btn btn-blue" onclick="acceder()">ENTRAR AHORA</button>
-    </div>
-</div>
-
-<div id="main-section" style="display:none;">
-    <h1 id="user-display">Panel Control</h1>
-    
-    <div class="alerta">
-        ⚠️ PENDIENTE: Cabanella debe 1 caja de tónica.
+<div class="wrapper">
+    <div id="login">
+        <h1>Acceso Monolito</h1>
+        <div class="card">
+            <input type="number" id="pin" placeholder="Introduce tu código">
+            <button class="btn btn-azul" onclick="entrar()">ENTRAR AL SISTEMA</button>
+        </div>
     </div>
 
-    <div class="card" style="background: #e7f3ff;">
-        <h3>COMPRAS / PEDIDOS</h3>
-        <button class="btn btn-blue" onclick="alert('Pedido registrado')">NUEVO PEDIDO</button>
-    </div>
+    <div id="main" style="display:none;">
+        <h1>Panel de Gestión</h1>
+        
+        <div class="incidencia-box">
+            ⚠️ AVISO: Cabanella debe 1 caja de tónica.
+        </div>
 
-    <div class="card" style="background: #fff0f0;">
-        <h3>INCIDENCIAS</h3>
-        <button class="btn btn-red" onclick="alert('Incidencia enviada')">AVISAR DE FALLO</button>
+        <div class="card">
+            <h2 style="font-size: 1rem; margin-top:0;">REPOSICIÓN Y COMPRAS</h2>
+            <button class="btn btn-azul" onclick="alert('Accediendo a Pedidos...')">GESTIONAR PROVEEDORES</button>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1rem; margin-top:0;">INCIDENCIAS CRÍTICAS</h2>
+            <button class="btn btn-rojo" onclick="alert('Abriendo Incidencias...')">NOTIFICAR FALLO</button>
+        </div>
     </div>
 </div>
 
 <script>
-    function acceder() {
-        const cod = document.getElementById('codigo').value;
-        if(cod !== "") {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('main-section').style.display = 'block';
-            document.getElementById('user-display').innerText = "Hola, Código " + cod;
+    function entrar() {
+        const pin = document.getElementById('pin').value;
+        if(pin !== "") {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('main').style.display = 'block';
         } else {
-            alert("Por favor, mete tu código.");
+            alert("Por favor, introduce tu código de camarero.");
         }
     }
 </script>
