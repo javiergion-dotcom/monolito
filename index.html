@@ -4,44 +4,41 @@
 <meta charset="UTF-8">
 <title>MONOLITO</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-
 <style>
 
 body {
-    background-color: #fdfaf5;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
+    background: #fdfaf5;
+    font-family: Arial;
     padding: 40px;
 }
 
-h1 {
-    font-weight: 500;
+.panel {
+    display: flex;
+    gap: 60px;
+}
+
+.columna {
+    display: flex;
+    flex-direction: column;
 }
 
 .boton {
-    padding: 15px 30px;
-    margin: 10px;
+    padding: 15px 25px;
+    margin: 10px 0;
     border: none;
+    background: #e8dfd1;
+    border-radius: 40px;
     font-size: 16px;
     cursor: pointer;
-
-    background: #e8dfd1;
-
-    border-radius: 60% 40% 55% 45% / 45% 60% 40% 55%;
-
-    box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
 }
 
-.boton:hover {
-    transform: scale(1.05);
+.titulo {
+    font-size: 28px;
+    margin-bottom: 30px;
 }
 
 .firma {
-    margin-top: 100px;
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
+    margin-top: 60px;
 }
 
 </style>
@@ -49,11 +46,21 @@ h1 {
 
 <body>
 
-<h1>MONOLITO</h1>
+<div class="titulo">MONOLITO</div>
 
+<div class="panel">
+
+<div class="columna">
 <button class="boton">Artículos</button>
 <button class="boton">Proveedores</button>
-<button class="boton">Precios</button>
+</div>
+
+<div class="columna">
+<button class="boton">Precios de compra</button>
+<button class="boton">Comparador</button>
+</div>
+
+</div>
 
 <div class="firma">
 Creado por J. Gion
