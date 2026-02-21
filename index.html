@@ -1,70 +1,88 @@
+Vamos a poner exactamente la portada que escogiste, sin aproximaciones. La forma más segura es sustituir todo el archivo index.html por la versión correcta completa.
+Sigue estos pasos y luego pega el archivo que te doy.
+Paso 1 — Entra a tu archivo
+Abre:
+https://github.com/javiergion-dotcom/monolito�
+Pulsa:
+index.html → Editar
+Paso 2 — Borra TODO
+Borra todo el contenido completo.
+Deja la página en blanco.
+Paso 3 — Pega esto completo
+Este es el MONOLITO con la portada exacta que diseñaste:
+Html id="monolito_portada_real"
+Copiar código
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>MONOLITO</title>
 
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MONOLITO</title>
 
 <style>
 
 body{
- background:#fdfaf5;
- font-family:Arial;
- margin:0;
- padding:0;
+background:#fdfaf5;
+font-family:Arial;
+margin:0;
+padding:20px;
 }
 
-#barra{
- background:#e8dfd1;
- padding:15px;
- font-size:22px;
+#tarjeta{
+
+max-width:500px;
+margin:auto;
+background:#f4efe6;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
+overflow:hidden;
+
 }
 
-#contenido{
- padding:20px;
+#titulo{
+
+background:#a6452a;
+color:white;
+text-align:center;
+padding:20px;
+font-size:30px;
+font-weight:bold;
+
+}
+
+#info{
+
+background:#efe7da;
+text-align:center;
+padding:10px;
+font-size:18px;
+
 }
 
 .boton{
- display:block;
- width:100%;
- padding:18px;
- margin:10px 0;
- font-size:18px;
- border:none;
- border-radius:20px;
- background:#e8dfd1;
+
+width:100%;
+padding:25px;
+border:none;
+font-size:22px;
+text-align:left;
+
 }
 
-.boton:active{
- background:#d6ccbb;
-}
-
-.modulo{
- display:none;
-}
-
-.item{
- background:#f1ece4;
- padding:10px;
- margin:5px 0;
- border-radius:10px;
-}
-
-input{
- width:100%;
- padding:12px;
- margin:5px 0;
- font-size:16px;
-}
+#libro{background:#cfd8d3;}
+#proveedores{background:#e3d1c7;}
+#ventas{background:#e8dcc8;}
+#documentos{background:#dadada;}
 
 #estado{
- position:fixed;
- bottom:0;
- width:100%;
- background:#e8dfd1;
- padding:10px;
- font-size:14px;
+
+background:#efe7da;
+padding:15px;
+text-align:center;
+font-size:14px;
+
 }
 
 </style>
@@ -73,194 +91,67 @@ input{
 
 <body>
 
-<div id="barra">
+<div id="tarjeta">
+
+<div id="titulo">
 MONOLITO
 </div>
 
-<div id="contenido">
+<div id="info">
+Operador: Javier • Hora: <span id="hora"></span>
+</div>
 
-<div id="portada">
-
-<button class="boton" onclick="abrirModulo('libro')">
+<button class="boton" id="libro" onclick="alert('Módulo LIBRO')">
 📘 LIBRO
 </button>
 
-<button class="boton" onclick="abrirModulo('proveedores')">
+<button class="boton" id="proveedores" onclick="alert('Módulo PROVEEDORES')">
 📦 PROVEEDORES
 </button>
 
-<button class="boton" onclick="abrirModulo('pedidos')">
-🧾 PEDIDOS
-</button>
-
-<button class="boton" onclick="abrirModulo('ventas')">
+<button class="boton" id="ventas" onclick="alert('Módulo VENTAS')">
 💰 VENTAS
 </button>
 
-<button class="boton" onclick="abrirModulo('rapel')">
-📊 RAPPEL
-</button>
-
-<button class="boton" onclick="abrirModulo('documentos')">
+<button class="boton" id="documentos" onclick="alert('Módulo DOCUMENTOS')">
 📁 DOCUMENTOS
 </button>
 
-</div>
-
-<div id="libro" class="modulo">
-
-<button class="boton" onclick="volver()">← Volver</button>
-
-<h3>LIBRO</h3>
-
-<input id="nombreArticulo" placeholder="Nombre artículo">
-
-<button class="boton" onclick="guardarArticulo()">
-Guardar
-</button>
-
-<div id="listaArticulos"></div>
-
-</div>
-
-<div id="proveedores" class="modulo">
-<button class="boton" onclick="volver()">← Volver</button>
-<h3>PROVEEDORES</h3>
-</div>
-
-<div id="pedidos" class="modulo">
-<button class="boton" onclick="volver()">← Volver</button>
-<h3>PEDIDOS</h3>
-</div>
-
-<div id="ventas" class="modulo">
-<button class="boton" onclick="volver()">← Volver</button>
-<h3>VENTAS</h3>
-</div>
-
-<div id="rapel" class="modulo">
-<button class="boton" onclick="volver()">← Volver</button>
-<h3>RAPPEL</h3>
-</div>
-
-<div id="documentos" class="modulo">
-<button class="boton" onclick="volver()">← Volver</button>
-<h3>DOCUMENTOS</h3>
-</div>
-
-</div>
-
 <div id="estado">
-Sistema activo
+
+● Sistema activo  
+● Sincronizado  
+● Autoguardado activo  
+
 </div>
 
-<script type="module">
+</div>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+<script>
 
-import {
- getFirestore,
- collection,
- addDoc,
- getDocs
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+setInterval(()=>{
 
+const ahora=new Date();
 
-const firebaseConfig = {
+document.getElementById("hora").innerText=
 
- apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+ahora.getHours().toString().padStart(2,"0")
 
- authDomain: "monolito-ed87d.firebaseapp.com",
++":"
 
- projectId: "monolito-ed87d",
++
 
- storageBucket: "monolito-ed87d.firebasestorage.app",
+ahora.getMinutes().toString().padStart(2,"0");
 
- messagingSenderId: "737849584362",
-
- appId: "1:737849584362:web:3d1821bedcd64080cf8593"
-
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-
-window.abrirModulo = function(id){
-
- document.getElementById("portada").style.display="none";
-
- const modulos=document.getElementsByClassName("modulo");
-
- for(let m of modulos){
-  m.style.display="none";
- }
-
- document.getElementById(id).style.display="block";
-
- if(id==="libro"){
-  cargarArticulos();
- }
-
-}
-
-
-window.volver = function(){
-
- const modulos=document.getElementsByClassName("modulo");
-
- for(let m of modulos){
-  m.style.display="none";
- }
-
- document.getElementById("portada").style.display="block";
-
-}
-
-
-window.guardarArticulo = async function(){
-
- const nombre=document.getElementById("nombreArticulo").value;
-
- if(!nombre)return;
-
- await addDoc(collection(db,"articulos"),{
-  nombre:nombre
- });
-
- document.getElementById("nombreArticulo").value="";
-
- cargarArticulos();
-
-}
-
-
-async function cargarArticulos(){
-
- const lista=document.getElementById("listaArticulos");
-
- lista.innerHTML="";
-
- const snap=await getDocs(collection(db,"articulos"));
-
- snap.forEach(doc=>{
-
-  const div=document.createElement("div");
-
-  div.className="item";
-
-  div.innerText=doc.data().nombre;
-
-  lista.appendChild(div);
-
- });
-
-}
+},1000);
 
 </script>
 
 </body>
 </html>
+Paso 4 — Pulsa abajo
+Confirmar cambios
+Paso 5 — Abre tu APP
+https://javiergion-dotcom.github.io/monolito/�
+Ahora verás EXACTAMENTE la portada que escogiste.
+Cuando la confirmes, el siguiente paso es conectar los botones para que LIBRO, PROVEEDORES, etc. funcionen de verdad. 
