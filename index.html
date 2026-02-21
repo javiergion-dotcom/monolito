@@ -5,87 +5,72 @@
 <title>MONOLITO GPT-Pro</title>
 
 <style>
-
 body {
     background: #fdfaf5;
     font-family: Arial;
-    padding: 40px;
-}
-
-.titulo {
-    font-size: 28px;
-    margin-bottom: 30px;
-}
-
-.panel {
-    display: flex;
-    gap: 60px;
-}
-
-.columna {
-    display: flex;
-    flex-direction: column;
+    padding: 20px;
 }
 
 .boton {
-    padding: 15px 25px;
-    margin: 10px 0;
+    padding: 12px;
+    margin: 6px 0;
     border: none;
     background: #e8dfd1;
-    border-radius: 40px;
+    border-radius: 20px;
     font-size: 16px;
-    cursor: pointer;
 }
 
-.firma {
-    margin-top: 60px;
+.modulo {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    display: none;
 }
 
+input {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
 </style>
 
 </head>
-
 <body>
 
-<div class="titulo">MONOLITO GPT-Pro</div>
+<h2>MONOLITO GPT-Pro</h2>
 
-<div class="panel">
+<button class="boton" onclick="mostrarArticulos()">Artículos</button>
 
-<div class="columna">
-<button class="boton" onclick="abrirArticulos()">Artículos</button>
-<button class="boton" onclick="abrirProveedores()">Proveedores</button>
-</div>
+<div id="articulos" class="modulo">
 
-<div class="columna">
-<button class="boton" onclick="abrirPrecios()">Precios de compra</button>
-<button class="boton" onclick="abrirComparador()">Comparador</button>
-</div>
+<input id="nombre" placeholder="Nombre del artículo">
+
+<button class="boton" onclick="guardar()">Guardar</button>
+
+<div id="lista"></div>
 
 </div>
-
-<div class="firma">
-Creado por J. Gion
-</div>
-
 
 <script>
 
-// FUNCIONES DE LOS BOTONES
-
-function abrirArticulos() {
-    alert("Módulo Artículos activado");
+function mostrarArticulos() {
+document.getElementById("articulos").style.display = "block";
 }
 
-function abrirProveedores() {
-    alert("Módulo Proveedores activado");
-}
+function guardar() {
 
-function abrirPrecios() {
-    alert("Módulo Precios de compra activado");
-}
+var nombre = document.getElementById("nombre").value;
 
-function abrirComparador() {
-    alert("Módulo Comparador activado");
+if (!nombre) return;
+
+var div = document.createElement("div");
+div.textContent = nombre;
+
+document.getElementById("lista").appendChild(div);
+
+document.getElementById("nombre").value = "";
+
 }
 
 </script>
