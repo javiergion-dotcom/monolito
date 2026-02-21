@@ -1,8 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>MONOLITO GPT PRO — Javier Gion</title>
+</head>
+
+<body style="background:#0f172a;color:white;font-family:Arial;padding:20px;">
+
+<h1>MONOLITO GPT PRO — Javier Gion</h1>
+
+<div id="articulos">
+Cargando artículos...
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
 const firebaseConfig = {
-  apiKey: "...",
-  authDomain: "...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
+  apiKey: "PEGA_AQUI_TU_APIKEY",
+  authDomain: "monolito-ed87d.firebaseapp.com",
+  projectId: "monolito-ed87d",
+  storageBucket: "monolito-ed87d.appspot.com",
+  messagingSenderId: "737849584362",
+  appId: "1:737849584362:web:..."
 };
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+async function cargarArticulos(){
+
+  const contenedor = document.getElementById("articulos");
+
+  const querySnapshot = await getDocs(collection(db, "articulos"));
+
+  contenedor.innerHTML = "";
+
+  querySnapshot.forEach((doc) => {
+
+    const data = doc.data();
+
+    contenedor.innerHTML +=
+      "<p>" +
+      data.nombre +
+      " — " +
+      data.precio +
+      " €</p>";
+
+  });
+
+}
+
+cargarArticulos();
+
+</script>
+
+</body>
+</html>
