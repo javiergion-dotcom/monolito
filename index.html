@@ -5,23 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONOLITO GPT-PRO</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f2f5; }
-        .contenedor { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #1a73e8; border-bottom: 3px solid #1a73e8; padding-bottom: 10px; text-transform: uppercase; }
-        .estado { color: #28a745; font-weight: bold; margin-bottom: 20px; }
-        .lista-articulos { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
-        .item-articulo { padding: 15px; border-bottom: 1px solid #eee; background: #fff; display: flex; justify-content: space-between; }
-        .item-articulo:last-child { border-bottom: none; }
-        .item-articulo:hover { background: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f0f2f5; color: #333; }
+        .contenedor { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; border-bottom: 3px solid #1a73e8; padding-bottom: 10px; margin-top: 0; }
+        .estado-box { background: #e8f0fe; padding: 10px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; color: #1967d2; }
+        .tabla-articulos { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tabla-articulos th { text-align: left; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6; }
+        .tabla-articulos td { padding: 12px; border-bottom: 1px solid #eee; }
+        .cuadro-libre { margin-top: 30px; padding: 20px; border: 2px dashed #ccc; border-radius: 8px; min-height: 100px; }
     </style>
 </head>
 <body>
     <div class="contenedor">
         <h1>MONOLITO GPT-PRO</h1>
-        <p class="estado">✅ CONEXIÓN ACTIVA: ARTÍCULOS</p>
+        <div class="estado-box">✅ MODO: GESTIÓN DE ARTÍCULOS (CONECTADO)</div>
         
-        <div id="visor-articulos" class="lista-articulos">
-            Cargando inventario de artículos...
+        <table class="tabla-articulos">
+            <thead>
+                <tr>
+                    <th>Nombre del Artículo</th>
+                    <th>Estado / Cantidad</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+                </tbody>
+        </table>
+
+        <div class="cuadro-libre">
+            <p><em>Área libre: Aquí puedes pegar tus cuadros, notas de incidencias o capturas sin bloqueos.</em></p>
+            <div id="espacio-pegado"></div>
         </div>
     </div>
 
@@ -29,6 +41,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Configuración verificada de tu proyecto
         const firebaseConfig = {
             authDomain: "monolito-ed87d.firebaseapp.com",
             projectId: "monolito-ed87d",
@@ -40,31 +53,31 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function obtenerArticulos() {
-            const visor = document.getElementById("visor-articulos");
+        async function cargarArticulos() {
+            const tabla = document.getElementById("cuerpo-tabla");
             try {
-                const querySnapshot = await getDocs(collection(db, "articulos"));
-                visor.innerHTML = "";
+                // Buscamos solo en la colección correcta: 'articulos'
+                const snapshot = await getDocs(collection(db, "articulos"));
+                tabla.innerHTML = "";
                 
-                if (querySnapshot.empty) {
-                    visor.innerHTML = "<div class='item-articulo'>No hay artículos registrados.</div>";
+                if (snapshot.empty) {
+                    tabla.innerHTML = "<tr><td colspan='2'>No hay artículos registrados en GESTION MONOLITO.</td></tr>";
                     return;
                 }
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const div = document.createElement("div");
-                    div.className = "item-articulo";
-                    div.innerHTML = `<span><strong>${data.nombre || 'Artículo sin nombre'}</strong></span> <span>${data.cantidad || 0} unidades</span>`;
-                    visor.appendChild(div);
+                snapshot.forEach((doc) => {
+                    const d = doc.data();
+                    const fila = document.createElement("tr");
+                    fila.innerHTML = `<td><strong>${d.nombre || 'Sin nombre'}</strong></td><td>${d.cantidad || d.estado || 'Disponible'}</td>`;
+                    tabla.appendChild(fila);
                 });
-            } catch (error) {
-                console.error("Error crítico:", error);
-                visor.innerHTML = "<div class='item-articulo' style='color:red'>Error de acceso. Verifica las Reglas en Firebase.</div>";
+            } catch (err) {
+                console.error("Error técnico:", err);
+                tabla.innerHTML = "<tr><td colspan='2' style='color:red'>Error de permisos. Revisa las reglas en Firebase.</td></tr>";
             }
         }
 
-        obtenerArticulos();
+        cargarArticulos();
     </script>
 </body>
 </html>
