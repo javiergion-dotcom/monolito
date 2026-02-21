@@ -1,97 +1,93 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONOLITO - J. GION</title>
-    <style>
-        body { background-color: #f2ede4; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .pantalla { width: 100%; max-width: 450px; min-height: 100vh; background: #fdfaf5; margin: auto; display: flex; flex-direction: column; }
-        
-        /* Cabezal */
-        .header { background: #963a25; padding: 25px 10px; text-align: center; color: white; }
-        .header h1 { margin: 0; font-size: 2.2rem; letter-spacing: 4px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONOLITO - SISTEMA VIVO</title>
 
-        .menu { padding: 30px 20px; flex-grow: 1; }
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Inter:wght@400,500&display=swap" rel="stylesheet">
 
-        /* Estilo Pincelada */
-        .bloque-pincel {
-            position: relative; margin-bottom: 25px; height: 75px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .fondo-trazo {
-            position: absolute; width: 105%; height: 120%; z-index: 1;
-            border-radius: 40% 70% 30% 80% / 60% 30% 70% 40%;
-        }
-        .etiqueta { position: relative; z-index: 2; font-size: 1.6rem; font-weight: 800; color: #2a2a2a; }
+<style>
+    body { background-color: #fdfaf5; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; color: #2a2a2a; }
+    .container { max-width: 600px; margin: auto; text-align: center; }
+    
+    h1 { font-weight: 500; margin-bottom: 30px; letter-spacing: 3px; color: #963a25; }
 
-        .color-1 { background: #b2c9c9; }
-        .color-2 { background: #e0beb6; }
-        .color-3 { background: #ebdcb9; }
-        .color-4 { background: #d9d0c5; }
+    /* SECCIONES */
+    .pantalla { display: none; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-top: 20px; text-align: left; }
+    .activa { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Capas de contenido (ocultas al inicio) */
-        .seccion-detalle { display: none; padding: 20px; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* BOTONES PINCELADA */
+    .boton-pincel {
+        display: block; width: 80%; margin: 15px auto; padding: 18px;
+        border: none; font-size: 1.2rem; cursor: pointer; color: #1a1a1a;
+        background: linear-gradient(135deg, #e8dfd1, #d9cfbf);
+        box-shadow: 2px 3px 6px rgba(0,0,0,0.08);
+        transition: all 0.2s ease;
+        font-weight: 600;
+    }
 
-        .btn-volver { background: #963a25; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+    /* Formas orgánicas */
+    .p-1 { border-radius: 53% 47% 42% 58% / 60% 38% 62% 40%; }
+    .p-2 { border-radius: 61% 39% 55% 45% / 44% 58% 42% 56%; }
+    .p-3 { border-radius: 48% 52% 39% 61% / 63% 37% 57% 43%; }
 
-        .pie { padding: 20px; text-align: center; background: #f2ede4; border-top: 1px solid #e5dfd3; }
-        .autor { font-family: 'Georgia', serif; font-style: italic; font-size: 1.3rem; color: #963a25; font-weight: bold; }
-    </style>
+    .boton-pincel:active { transform: scale(0.95); }
+
+    .btn-volver { background: #963a25; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+
+    /* LISTADOS */
+    .item-lista { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+    .alerta { background: #fff1f2; color: #b91c1c; padding: 15px; border-radius: 10px; margin-bottom: 15px; font-weight: bold; border-left: 5px solid #b91c1c; }
+
+    .firma { margin-top: 50px; font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #5a534a; opacity: 0.8; }
+</style>
 </head>
 <body>
 
-<div class="pantalla">
-    <div class="header"><h1>MONOLITO</h1></div>
+<div class="container" id="vista-menu">
+    <h1>MONOLITO</h1>
+    <button class="boton-pincel p-1" onclick="navegar('articulos')">Artículos</button>
+    <button class="boton-pincel p-2" onclick="navegar('proveedores')">Proveedores</button>
+    <button class="boton-pincel p-3" onclick="navegar('precios')">Precios</button>
+    <div class="firma">Creado por J. Gion</div>
+</div>
 
-    <div id="menu-principal" class="menu">
-        <div class="bloque-pincel" onclick="mostrar('libro')">
-            <div class="fondo-trazo color-1"></div>
-            <div class="etiqueta">📘 LIBRO</div>
-        </div>
+<div class="container pantalla" id="vista-articulos">
+    <button class="btn-volver" onclick="irMenu()">← VOLVER</button>
+    <h2>Inventario Actual</h2>
+    <div class="item-lista"><span>Barril Mahou 50L</span> <span>8 unidades</span></div>
+    <div class="item-lista"><span>Tónica Schweppes</span> <span>24 unidades</span></div>
+    <div class="item-lista"><span>Café en grano</span> <span>5 kg</span></div>
+</div>
 
-        <div class="bloque-pincel" onclick="mostrar('proveedores')">
-            <div class="fondo-trazo color-2"></div>
-            <div class="etiqueta">📦 PROVEEDORES</div>
-        </div>
+<div class="container pantalla" id="vista-proveedores">
+    <button class="btn-volver" onclick="irMenu()">← VOLVER</button>
+    <h2>Gestión de Pedidos</h2>
+    <div class="alerta">⚠️ CABANELLA: Debe 1 caja de tónica.</div>
+    <div class="item-lista"><span>Mahou</span> <span>Lunes/Jueves</span></div>
+    <div class="item-lista"><span>Cabanella</span> <span>Martes</span></div>
+    <div class="item-lista"><span>PepsiCo</span> <span>Miércoles</span></div>
+</div>
 
-        <div class="bloque-pincel" onclick="mostrar('ventas')">
-            <div class="fondo-trazo color-3"></div>
-            <div class="etiqueta">💰 VENTAS</div>
-        </div>
-    </div>
-
-    <div id="seccion-libro" class="seccion-detalle">
-        <button class="btn-volver" onclick="irAlMenu()">⬅ VOLVER</button>
-        <h2>Artículos en Stock</h2>
-        <p>Cargando lista de existencias...</p>
-    </div>
-
-    <div id="seccion-proveedores" class="seccion-detalle">
-        <button class="btn-volver" onclick="irAlMenu()">⬅ VOLVER</button>
-        <h2>Control de Pedidos</h2>
-        <div style="background: #fff1f2; padding: 15px; border-left: 5px solid #b91c1c;">
-            <strong>INCIDENCIA:</strong> Cabanella debe 1 caja de tónica.
-        </div>
-        <p style="margin-top: 20px;">• Mahou<br>• Solán de Cabras<br>• Pepsi</p>
-    </div>
-
-    <div class="pie">
-        <div class="autor">Creado por J. Gion</div>
-    </div>
+<div class="container pantalla" id="vista-precios">
+    <button class="btn-volver" onclick="irMenu()">← VOLVER</button>
+    <h2>Tarifas y Rebates</h2>
+    <div class="item-lista"><span>Mahou 5 estrellas</span> <span>1,20€ (Neto)</span></div>
+    <div class="item-lista"><span>Rebate Cerveza</span> <span>10% pactado</span></div>
 </div>
 
 <script>
-    function mostrar(id) {
-        document.getElementById('menu-principal').style.display = 'none';
-        document.querySelectorAll('.seccion-detalle').forEach(s => s.style.display = 'none');
-        document.getElementById('seccion-' + id).style.display = 'block';
+    function navegar(id) {
+        document.getElementById('vista-menu').style.display = 'none';
+        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+        document.getElementById('vista-' + id).classList.add('activa');
     }
 
-    function irAlMenu() {
-        document.getElementById('menu-principal').style.display = 'block';
-        document.querySelectorAll('.seccion-detalle').forEach(s => s.style.display = 'none');
+    function irMenu() {
+        document.getElementById('vista-menu').style.display = 'block';
+        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
     }
 </script>
 
