@@ -2,49 +2,69 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONOLITO GPT-PRO</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f2f5; }
+        .contenedor { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #1a73e8; border-bottom: 3px solid #1a73e8; padding-bottom: 10px; text-transform: uppercase; }
+        .estado { color: #28a745; font-weight: bold; margin-bottom: 20px; }
+        .lista-articulos { border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .item-articulo { padding: 15px; border-bottom: 1px solid #eee; background: #fff; display: flex; justify-content: space-between; }
+        .item-articulo:last-child { border-bottom: none; }
+        .item-articulo:hover { background: #f8f9fa; }
+    </style>
 </head>
 <body>
-    <h1>Gestión de Artículos - MONOLITO</h1>
-    <div id="cuadro-articulos">
+    <div class="contenedor">
+        <h1>MONOLITO GPT-PRO</h1>
+        <p class="estado">✅ CONEXIÓN ACTIVA: ARTÍCULOS</p>
+        
+        <div id="visor-articulos" class="lista-articulos">
+            Cargando inventario de artículos...
         </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIGURACIÓN DE TU FIREBASE (Asegúrate de que estos datos son los tuyos)
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
             authDomain: "monolito-ed87d.firebaseapp.com",
             projectId: "monolito-ed87d",
             storageBucket: "monolito-ed87d.appspot.com",
-            messagingSenderId: "TU_SENDER_ID",
-            appId: "TU_APP_ID"
+            messagingSenderId: "931221763784",
+            appId: "1:931221763784:web:0d96d274f85e48956903f6"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        async function cargarArticulos() {
+        async function obtenerArticulos() {
+            const visor = document.getElementById("visor-articulos");
             try {
-                // Solo buscamos en la colección "articulos"
                 const querySnapshot = await getDocs(collection(db, "articulos"));
-                console.log("Conexión exitosa. Cargando artículos...");
+                visor.innerHTML = "";
                 
-                const contenedor = document.getElementById("cuadro-articulos");
+                if (querySnapshot.empty) {
+                    visor.innerHTML = "<div class='item-articulo'>No hay artículos registrados.</div>";
+                    return;
+                }
+
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    const p = document.createElement("p");
-                    p.textContent = `Artículo: ${data.nombre}`;
-                    contenedor.appendChild(p);
+                    const div = document.createElement("div");
+                    div.className = "item-articulo";
+                    div.innerHTML = `<span><strong>${data.nombre || 'Artículo sin nombre'}</strong></span> <span>${data.cantidad || 0} unidades</span>`;
+                    visor.appendChild(div);
                 });
-            } catch (e) {
-                console.error("Error al cargar artículos: ", e);
+            } catch (error) {
+                console.error("Error crítico:", error);
+                visor.innerHTML = "<div class='item-articulo' style='color:red'>Error de acceso. Verifica las Reglas en Firebase.</div>";
             }
         }
 
-        cargarArticulos();
+        obtenerArticulos();
     </script>
 </body>
 </html>
