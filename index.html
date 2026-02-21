@@ -5,82 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONOLITO - J. GION</title>
     <style>
-        body { background-color: #f4f1ea; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
-        .tablet { width: 100%; max-width: 450px; min-height: 95vh; display: flex; flex-direction: column; }
+        body { background-color: #f2ede4; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
+        .contenedor { width: 100%; max-width: 450px; min-height: 100vh; background: #fdfaf5; display: flex; flex-direction: column; }
         
-        /* Cabezal más integrado */
-        .header { padding: 30px 10px 10px 10px; text-align: center; }
-        .header h1 { color: #b04a33; margin: 0; font-size: 2.5rem; letter-spacing: 5px; font-weight: 900; }
+        .header { background: #963a25; padding: 25px 10px; text-align: center; }
+        .header h1 { color: white; margin: 0; font-size: 2.2rem; letter-spacing: 4px; font-weight: 900; }
 
-        .menu-container { padding: 30px 20px; flex-grow: 1; }
+        .menu { padding: 40px 20px; flex-grow: 1; }
 
-        /* EL EFECTO PINCELADA (No ortopédico) */
-        .pincelada {
+        /* EL EFECTO DE PINCELADA REAL */
+        .bloque-pincel {
             position: relative;
-            margin-bottom: 25px;
-            padding: 15px 30px;
+            margin-bottom: 30px;
+            height: 75px;
             display: flex;
             align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        
-        /* Aquí creamos la forma irregular del trazo */
-        .trazo {
+
+        .fondo-trazo {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            width: 105%;
+            height: 120%;
             z-index: 1;
-            /* Bordes irregulares como un brochazo */
-            border-radius: 60% 40% 70% 30% / 40% 50% 60% 70%;
+            /* Formas de mancha de pintura */
+            border-radius: 40% 70% 30% 80% / 60% 30% 70% 40%;
+            filter: blur(0.5px);
         }
 
-        .contenido { position: relative; z-index: 2; display: flex; align-items: center; }
-        .icon { font-size: 1.8rem; margin-right: 20px; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2)); }
-        .texto { font-size: 1.5rem; font-weight: 800; color: #2d2d2d; letter-spacing: 1px; }
+        .etiqueta {
+            position: relative;
+            z-index: 2;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #2a2a2a;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        /* Colores pastel con formas ligeramente distintas para cada uno */
-        .azul { background: #adc2c2; border-radius: 70% 30% 80% 20% / 50% 40% 60% 50%; }
-        .rosa { background: #d9b8b0; border-radius: 30% 70% 40% 60% / 60% 30% 70% 40%; }
-        .ocre { background: #e9dec1; border-radius: 80% 20% 50% 50% / 40% 70% 30% 60%; }
-        .gris { background: #d6cbc1; border-radius: 40% 60% 30% 70% / 50% 50% 50% 50%; }
-
-        .pincelada:active { transform: scale(0.95); }
-
-        .footer { padding: 40px; text-align: center; }
-        .firma { font-family: 'serif'; font-style: italic; font-size: 1.3rem; color: #b04a33; }
-    </style>
-</head>
-<body>
-
-<div class="tablet">
-    <div class="header"><h1>MONOLITO</h1></div>
-
-    <div class="menu-container">
-        <div class="pincelada">
-            <div class="trazo azul"></div>
-            <div class="contenido"><span class="icon">📘</span><span class="texto">LIBRO</span></div>
-        </div>
-
-        <div class="pincelada" onclick="alert('Cabanella: 1 caja tónica pendiente')">
-            <div class="trazo rosa"></div>
-            <div class="contenido"><span class="icon">📦</span><span class="texto">PROVEEDORES</span></div>
-        </div>
-
-        <div class="pincelada">
-            <div class="trazo ocre"></div>
-            <div class="contenido"><span class="icon">💰</span><span class="texto">VENTAS</span></div>
-        </div>
-
-        <div class="pincelada">
-            <div class="trazo gris"></div>
-            <div class="contenido"><span class="icon">💼</span><span class="texto">DOCUMENTOS</span></div>
-        </div>
-    </div>
-
-    <div class="footer">
-        <div class="firma">Creado por J. Gion</div>
-    </div>
-</div>
-
-</body>
-</html>
+        /* Colores pastel aplicados a las manchas */
+        .color-1 { background: #b2c9c9; border-radius: 30% 80% 40% 70% / 50% 30% 80% 40%; }
+        .color-2 { background: #e0beb6; border-radius: 70% 40% 80% 30% / 40% 70% 30% 60%; }
+        .color
