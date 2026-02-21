@@ -2,87 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONOLITO GPT PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MONOLITO - CONTROL</title>
     <style>
-        :root {
-            --bg-pasta: #e2e8f0;
-            --text-dark: #1e293b;
-            --accent-blue: #60a5fa;
-            --accent-red: #f87171;
-            --card-bg: #ffffff;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-pasta); color: var(--text-dark); margin: 0; padding: 15px; }
-        .app-container { max-width: 600px; margin: auto; }
-        h1 { text-align: center; color: #475569; font-size: 1.5rem; }
-        
-        /* Sistema de Inversión de Color según sección */
-        .seccion-cafeteria { background: #dcd3c9; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        .seccion-incidencias { background: #f1dada; border-radius: 12px; padding: 15px; }
-
-        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
-        .btn-blue { background: var(--accent-blue); color: white; }
-        .btn-red { background: var(--accent-red); color: white; }
-        
-        #user-login { text-align: center; padding: 50px 20px; }
-        input[type="number"] { width: 80%; padding: 15px; font-size: 1.5rem; border-radius: 8px; border: 2px solid #cbd5e1; margin-bottom: 20px; text-align: center; }
-        
-        .alerta-persistente { background: #ef4444; color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 20px; color: #1c1e21; }
+        .card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1 { font-size: 24px; text-align: center; color: #1877f2; }
+        input { width: 100%; padding: 15px; font-size: 20px; border-radius: 10px; border: 2px solid #ddd; box-sizing: border-box; margin-bottom: 10px; }
+        .btn { width: 100%; padding: 20px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; margin-bottom: 10px; }
+        .btn-blue { background: #1877f2; }
+        .btn-red { background: #fa3e3e; }
+        .alerta { background: #ffebe9; border-left: 5px solid #fa3e3e; padding: 15px; color: #d93025; font-weight: bold; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div id="pantalla-login">
-        <h1>MONOLITO — Acceso</h1>
-        <div id="user-login">
-            <input type="number" id="user-code" placeholder="Tu Código (ej. 04)">
-            <button class="btn btn-blue" onclick="entrar()">ENTRAR</button>
-        </div>
+<div id="login-section">
+    <h1>ENTRADA MONOLITO</h1>
+    <div class="card">
+        <input type="number" id="codigo" placeholder="Introduce tu código">
+        <button class="btn btn-blue" onclick="acceder()">ENTRAR AHORA</button>
+    </div>
+</div>
+
+<div id="main-section" style="display:none;">
+    <h1 id="user-display">Panel Control</h1>
+    
+    <div class="alerta">
+        ⚠️ PENDIENTE: Cabanella debe 1 caja de tónica.
     </div>
 
-    <div id="app-main" style="display:none;">
-        <h1 id="saludo">Hola, Javier</h1>
-        
-        <div class="alerta-persistente" id="aviso-incidencia">
-            ⚠️ INCIDENCIA: Faltan cajas de Tónica (CABANELLA)
-        </div>
+    <div class="card" style="background: #e7f3ff;">
+        <h3>COMPRAS / PEDIDOS</h3>
+        <button class="btn btn-blue" onclick="alert('Pedido registrado')">NUEVO PEDIDO</button>
+    </div>
 
-        <div class="seccion-cafeteria">
-            <h3>CAFETERÍA (Candelas)</h3>
-            <p style="font-size: 0.8rem; color: #78350f;">* Pago semana anterior</p>
-            <button class="btn btn-blue" onclick="registrar('Pedido Café')">Hacer Pedido</button>
-        </div>
-
-        <div class="seccion-incidencias">
-            <h3>GESTIÓN CRÍTICA</h3>
-            <button class="btn btn-red" onclick="registrar('Incidencia Abierta')">ABRIR INCIDENCIA</button>
-        </div>
-
-        <div id="logs" style="margin-top:20px; font-size: 0.8rem; color: #64748b;"></div>
+    <div class="card" style="background: #fff0f0;">
+        <h3>INCIDENCIAS</h3>
+        <button class="btn btn-red" onclick="alert('Incidencia enviada')">AVISAR DE FALLO</button>
     </div>
 </div>
 
 <script>
-    let usuarioActivo = "";
-
-    function entrar() {
-        const code = document.getElementById('user-code').value;
-        if(code) {
-            usuarioActivo = code;
-            document.getElementById('pantalla-login').style.display = 'none';
-            document.getElementById('app-main').style.display = 'block';
-            document.getElementById('saludo').innerText = "Panel Monolito — Usuario " + code;
+    function acceder() {
+        const cod = document.getElementById('codigo').value;
+        if(cod !== "") {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('main-section').style.display = 'block';
+            document.getElementById('user-display').innerText = "Hola, Código " + cod;
+        } else {
+            alert("Por favor, mete tu código.");
         }
-    }
-
-    function registrar(accion) {
-        const ahora = new Date();
-        const log = document.getElementById('logs');
-        const registro = `[${ahora.toLocaleTimeString()}] ${accion} por Usuario ${usuarioActivo}`;
-        log.innerHTML = registro + "<br>" + log.innerHTML;
-        alert(accion + " registrado con éxito.");
     }
 </script>
 
