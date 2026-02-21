@@ -3,81 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONOLITO GPT-PRO</title>
+    <title>MONOLITO GPT PRO</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f0f2f5; color: #333; }
-        .contenedor { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #1a73e8; border-bottom: 3px solid #1a73e8; padding-bottom: 10px; margin-top: 0; }
-        .estado-box { background: #e8f0fe; padding: 10px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; color: #1967d2; }
-        .tabla-articulos { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .tabla-articulos th { text-align: left; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #dee2e6; }
-        .tabla-articulos td { padding: 12px; border-bottom: 1px solid #eee; }
-        .cuadro-libre { margin-top: 30px; padding: 20px; border: 2px dashed #ccc; border-radius: 8px; min-height: 100px; }
+        :root {
+            --bg-pasta: #e2e8f0;
+            --text-dark: #1e293b;
+            --accent-blue: #60a5fa;
+            --accent-red: #f87171;
+            --card-bg: #ffffff;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-pasta); color: var(--text-dark); margin: 0; padding: 15px; }
+        .app-container { max-width: 600px; margin: auto; }
+        h1 { text-align: center; color: #475569; font-size: 1.5rem; }
+        
+        /* Sistema de Inversión de Color según sección */
+        .seccion-cafeteria { background: #dcd3c9; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .seccion-incidencias { background: #f1dada; border-radius: 12px; padding: 15px; }
+
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+        .btn-blue { background: var(--accent-blue); color: white; }
+        .btn-red { background: var(--accent-red); color: white; }
+        
+        #user-login { text-align: center; padding: 50px 20px; }
+        input[type="number"] { width: 80%; padding: 15px; font-size: 1.5rem; border-radius: 8px; border: 2px solid #cbd5e1; margin-bottom: 20px; text-align: center; }
+        
+        .alerta-persistente { background: #ef4444; color: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
-    <div class="contenedor">
-        <h1>MONOLITO GPT-PRO</h1>
-        <div class="estado-box">✅ MODO: GESTIÓN DE ARTÍCULOS (CONECTADO)</div>
-        
-        <table class="tabla-articulos">
-            <thead>
-                <tr>
-                    <th>Nombre del Artículo</th>
-                    <th>Estado / Cantidad</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo-tabla">
-                </tbody>
-        </table>
 
-        <div class="cuadro-libre">
-            <p><em>Área libre: Aquí puedes pegar tus cuadros, notas de incidencias o capturas sin bloqueos.</em></p>
-            <div id="espacio-pegado"></div>
+<div class="app-container">
+    <div id="pantalla-login">
+        <h1>MONOLITO — Acceso</h1>
+        <div id="user-login">
+            <input type="number" id="user-code" placeholder="Tu Código (ej. 04)">
+            <button class="btn btn-blue" onclick="entrar()">ENTRAR</button>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <div id="app-main" style="display:none;">
+        <h1 id="saludo">Hola, Javier</h1>
+        
+        <div class="alerta-persistente" id="aviso-incidencia">
+            ⚠️ INCIDENCIA: Faltan cajas de Tónica (CABANELLA)
+        </div>
 
-        // Configuración verificada de tu proyecto
-        const firebaseConfig = {
-            authDomain: "monolito-ed87d.firebaseapp.com",
-            projectId: "monolito-ed87d",
-            storageBucket: "monolito-ed87d.appspot.com",
-            messagingSenderId: "931221763784",
-            appId: "1:931221763784:web:0d96d274f85e48956903f6"
-        };
+        <div class="seccion-cafeteria">
+            <h3>CAFETERÍA (Candelas)</h3>
+            <p style="font-size: 0.8rem; color: #78350f;">* Pago semana anterior</p>
+            <button class="btn btn-blue" onclick="registrar('Pedido Café')">Hacer Pedido</button>
+        </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        <div class="seccion-incidencias">
+            <h3>GESTIÓN CRÍTICA</h3>
+            <button class="btn btn-red" onclick="registrar('Incidencia Abierta')">ABRIR INCIDENCIA</button>
+        </div>
 
-        async function cargarArticulos() {
-            const tabla = document.getElementById("cuerpo-tabla");
-            try {
-                // Buscamos solo en la colección correcta: 'articulos'
-                const snapshot = await getDocs(collection(db, "articulos"));
-                tabla.innerHTML = "";
-                
-                if (snapshot.empty) {
-                    tabla.innerHTML = "<tr><td colspan='2'>No hay artículos registrados en GESTION MONOLITO.</td></tr>";
-                    return;
-                }
+        <div id="logs" style="margin-top:20px; font-size: 0.8rem; color: #64748b;"></div>
+    </div>
+</div>
 
-                snapshot.forEach((doc) => {
-                    const d = doc.data();
-                    const fila = document.createElement("tr");
-                    fila.innerHTML = `<td><strong>${d.nombre || 'Sin nombre'}</strong></td><td>${d.cantidad || d.estado || 'Disponible'}</td>`;
-                    tabla.appendChild(fila);
-                });
-            } catch (err) {
-                console.error("Error técnico:", err);
-                tabla.innerHTML = "<tr><td colspan='2' style='color:red'>Error de permisos. Revisa las reglas en Firebase.</td></tr>";
-            }
+<script>
+    let usuarioActivo = "";
+
+    function entrar() {
+        const code = document.getElementById('user-code').value;
+        if(code) {
+            usuarioActivo = code;
+            document.getElementById('pantalla-login').style.display = 'none';
+            document.getElementById('app-main').style.display = 'block';
+            document.getElementById('saludo').innerText = "Panel Monolito — Usuario " + code;
         }
+    }
 
-        cargarArticulos();
-    </script>
+    function registrar(accion) {
+        const ahora = new Date();
+        const log = document.getElementById('logs');
+        const registro = `[${ahora.toLocaleTimeString()}] ${accion} por Usuario ${usuarioActivo}`;
+        log.innerHTML = registro + "<br>" + log.innerHTML;
+        alert(accion + " registrado con éxito.");
+    }
+</script>
+
 </body>
 </html>
