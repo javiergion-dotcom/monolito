@@ -3,79 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MONOLITO - CREADO POR J. GION</title>
+    <title>MONOLITO - J. GION</title>
     <style>
-        body { background-color: #f7f3ed; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .tablet { width: 100%; max-width: 450px; background: #fdfbf9; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; display: flex; flex-direction: column; min-height: 90vh; }
+        body { background-color: #f4f1ea; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
+        .tablet { width: 100%; max-width: 450px; min-height: 95vh; display: flex; flex-direction: column; }
         
-        .header { background: #b04a33; color: white; text-align: center; padding: 15px; }
-        .header h1 { margin: 0; font-size: 2rem; letter-spacing: 3px; font-weight: bold; }
+        /* Cabezal más integrado */
+        .header { padding: 30px 10px 10px 10px; text-align: center; }
+        .header h1 { color: #b04a33; margin: 0; font-size: 2.5rem; letter-spacing: 5px; font-weight: 900; }
+
+        .menu-container { padding: 30px 20px; flex-grow: 1; }
+
+        /* EL EFECTO PINCELADA (No ortopédico) */
+        .pincelada {
+            position: relative;
+            margin-bottom: 25px;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
         
-        .info-bar { background: #f1ede4; padding: 10px; text-align: center; border-bottom: 1px solid #e2ddd3; font-size: 0.9rem; color: #333; }
+        /* Aquí creamos la forma irregular del trazo */
+        .trazo {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+            /* Bordes irregulares como un brochazo */
+            border-radius: 60% 40% 70% 30% / 40% 50% 60% 70%;
+        }
 
-        .menu-container { padding: 20px 10px; flex-grow: 1; }
+        .contenido { position: relative; z-index: 2; display: flex; align-items: center; }
+        .icon { font-size: 1.8rem; margin-right: 20px; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2)); }
+        .texto { font-size: 1.5rem; font-weight: 800; color: #2d2d2d; letter-spacing: 1px; }
 
-        .item { display: flex; align-items: center; margin-bottom: 15px; padding: 10px; position: relative; cursor: pointer; }
-        .brush { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 1; opacity: 0.8; border-radius: 50px 10px 40px 5px; }
-        .content { position: relative; z-index: 2; display: flex; align-items: center; width: 100%; padding-left: 15px; }
-        
-        .icon { width: 45px; height: 45px; margin-right: 20px; background: white; border-radius: 5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .text { font-size: 1.6rem; font-weight: bold; color: #2d2d2d; letter-spacing: 1px; }
+        /* Colores pastel con formas ligeramente distintas para cada uno */
+        .azul { background: #adc2c2; border-radius: 70% 30% 80% 20% / 50% 40% 60% 50%; }
+        .rosa { background: #d9b8b0; border-radius: 30% 70% 40% 60% / 60% 30% 70% 40%; }
+        .ocre { background: #e9dec1; border-radius: 80% 20% 50% 50% / 40% 70% 30% 60%; }
+        .gris { background: #d6cbc1; border-radius: 40% 60% 30% 70% / 50% 50% 50% 50%; }
 
-        .bg-libro { background: #adc2c2; }
-        .bg-prov { background: #d9b8b0; }
-        .bg-ventas { background: #e9dec1; }
-        .bg-docs { background: #d6cbc1; }
+        .pincelada:active { transform: scale(0.95); }
 
-        /* FIRMA DEL AUTOR */
-        .footer { background: #f1ede4; padding: 20px; text-align: center; border-top: 1px solid #e2ddd3; }
-        .signature { font-family: 'Georgia', serif; font-style: italic; font-size: 1.1rem; color: #b04a33; font-weight: bold; }
-        .credits { font-size: 0.7rem; color: #887; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer { padding: 40px; text-align: center; }
+        .firma { font-family: 'serif'; font-style: italic; font-size: 1.3rem; color: #b04a33; }
     </style>
 </head>
 <body>
 
 <div class="tablet">
     <div class="header"><h1>MONOLITO</h1></div>
-    <div class="info-bar">Administrador: <strong>Javier</strong></div>
 
     <div class="menu-container">
-        <div class="item">
-            <div class="brush bg-libro"></div>
-            <div class="content">
-                <div class="icon">📘</div>
-                <div class="text">LIBRO</div>
-            </div>
+        <div class="pincelada">
+            <div class="trazo azul"></div>
+            <div class="contenido"><span class="icon">📘</span><span class="texto">LIBRO</span></div>
         </div>
 
-        <div class="item" onclick="alert('Pendiente: 1 caja tónica Cabanella')">
-            <div class="brush bg-prov"></div>
-            <div class="content">
-                <div class="icon">📦</div>
-                <div class="text">PROVEEDORES</div>
-            </div>
+        <div class="pincelada" onclick="alert('Cabanella: 1 caja tónica pendiente')">
+            <div class="trazo rosa"></div>
+            <div class="contenido"><span class="icon">📦</span><span class="texto">PROVEEDORES</span></div>
         </div>
 
-        <div class="item">
-            <div class="brush bg-ventas"></div>
-            <div class="content">
-                <div class="icon">💰</div>
-                <div class="text">VENTAS</div>
-            </div>
+        <div class="pincelada">
+            <div class="trazo ocre"></div>
+            <div class="contenido"><span class="icon">💰</span><span class="texto">VENTAS</span></div>
         </div>
 
-        <div class="item">
-            <div class="brush bg-docs"></div>
-            <div class="content">
-                <div class="icon">💼</div>
-                <div class="text">DOCUMENTOS</div>
-            </div>
+        <div class="pincelada">
+            <div class="trazo gris"></div>
+            <div class="contenido"><span class="icon">💼</span><span class="texto">DOCUMENTOS</span></div>
         </div>
     </div>
 
     <div class="footer">
-        <div class="signature">Creado por J. Gion</div>
-        <div class="credits">Sistema de Gestión Pro • 2026</div>
+        <div class="firma">Creado por J. Gion</div>
     </div>
 </div>
 
