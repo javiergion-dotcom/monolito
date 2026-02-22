@@ -1,99 +1,87 @@
-Vamos a poner exactamente la portada que escogiste, sin aproximaciones. La forma más segura es sustituir todo el archivo index.html por la versión correcta completa.
-Sigue estos pasos y luego pega el archivo que te doy.
-Paso 1 — Entra a tu archivo
-Abre:
-https://github.com/javiergion-dotcom/monolito�
-Pulsa:
-index.html → Editar
-Paso 2 — Borra TODO
-Borra todo el contenido completo.
-Deja la página en blanco.
-Paso 3 — Pega esto completo
-Este es el MONOLITO con la portada exacta que diseñaste:
-Html id="monolito_portada_real"
-Copiar código
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>MONOLITO</title>
 
 <style>
 
 body{
-background:#fdfaf5;
-font-family:Arial;
 margin:0;
-padding:20px;
+font-family:Arial, sans-serif;
+background:#f5efe6;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
-#tarjeta{
-
-max-width:500px;
-margin:auto;
-background:#f4efe6;
-border-radius:10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.2);
+#contenedor{
+width:340px;
+background:#efe6d8;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
 overflow:hidden;
-
 }
 
-#titulo{
-
-background:#a6452a;
+#cabecera{
+background:#a3472a;
 color:white;
 text-align:center;
-padding:20px;
-font-size:30px;
+font-size:28px;
 font-weight:bold;
-
+padding:14px;
 }
 
 #info{
-
-background:#efe7da;
 text-align:center;
-padding:10px;
-font-size:18px;
-
+padding:8px;
+font-size:14px;
+background:#e6dccd;
 }
 
 .boton{
-
-width:100%;
-padding:25px;
-border:none;
-font-size:22px;
-text-align:left;
-
+padding:18px;
+font-size:18px;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:10px;
+cursor:pointer;
 }
 
-#libro{background:#cfd8d3;}
-#proveedores{background:#e3d1c7;}
-#ventas{background:#e8dcc8;}
-#documentos{background:#dadada;}
+#libro{
+background:#b8c4c2;
+}
 
-#estado{
+#proveedores{
+background:#cdb8a8;
+}
 
-background:#efe7da;
-padding:15px;
+#ventas{
+background:#d8c7a7;
+}
+
+#documentos{
+background:#c9c9c9;
+}
+
+#pie{
 text-align:center;
-font-size:14px;
-
+padding:8px;
+font-size:12px;
+background:#e6dccd;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div id="tarjeta">
+<div id="contenedor">
 
-<div id="titulo">
+<div id="cabecera">
 MONOLITO
 </div>
 
@@ -101,57 +89,41 @@ MONOLITO
 Operador: Javier • Hora: <span id="hora"></span>
 </div>
 
-<button class="boton" id="libro" onclick="alert('Módulo LIBRO')">
+<div id="libro" class="boton">
 📘 LIBRO
-</button>
+</div>
 
-<button class="boton" id="proveedores" onclick="alert('Módulo PROVEEDORES')">
+<div id="proveedores" class="boton">
 📦 PROVEEDORES
-</button>
+</div>
 
-<button class="boton" id="ventas" onclick="alert('Módulo VENTAS')">
+<div id="ventas" class="boton">
 💰 VENTAS
-</button>
+</div>
 
-<button class="boton" id="documentos" onclick="alert('Módulo DOCUMENTOS')">
+<div id="documentos" class="boton">
 📁 DOCUMENTOS
-</button>
+</div>
 
-<div id="estado">
-
-● Sistema activo  
-● Sincronizado  
-● Autoguardado activo  
-
+<div id="pie">
+● Sistema activo ● Sincronizado ● Autoguardado activo
 </div>
 
 </div>
 
 <script>
 
-setInterval(()=>{
-
+function actualizarHora(){
 const ahora=new Date();
+const h=ahora.getHours().toString().padStart(2,"0");
+const m=ahora.getMinutes().toString().padStart(2,"0");
+document.getElementById("hora").innerText=h+":"+m;
+}
 
-document.getElementById("hora").innerText=
-
-ahora.getHours().toString().padStart(2,"0")
-
-+":"
-
-+
-
-ahora.getMinutes().toString().padStart(2,"0");
-
-},1000);
+actualizarHora();
+setInterval(actualizarHora,1000);
 
 </script>
 
 </body>
 </html>
-Paso 4 — Pulsa abajo
-Confirmar cambios
-Paso 5 — Abre tu APP
-https://javiergion-dotcom.github.io/monolito/�
-Ahora verás EXACTAMENTE la portada que escogiste.
-Cuando la confirmes, el siguiente paso es conectar los botones para que LIBRO, PROVEEDORES, etc. funcionen de verdad. 
