@@ -28,118 +28,88 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ---------- ARTICULOS BLINDADO ---------- */
+/* ---------- ARTICULOS ---------- */
 
 window.guardarArticulo = async function(){
 
-  try{
+  const nombre = document.getElementById("nombreArticulo").value.trim();
+  const precio = document.getElementById("precioArticulo").value.trim();
 
-    const nombre = document.getElementById("nombreArticulo").value.trim();
-    const precio = document.getElementById("precioArticulo").value.trim();
+  if(nombre === "" || precio === "") return;
 
-    if(nombre === "" || precio === "") return;
+  await addDoc(collection(db,"articulos"),{
+    nombre,
+    precio,
+    fecha: new Date().toISOString()
+  });
 
-    await addDoc(collection(db,"articulos"),{
-      nombre: nombre,
-      precio: precio,
-      fecha: new Date().toISOString()
-    });
+  document.getElementById("nombreArticulo").value="";
+  document.getElementById("precioArticulo").value="";
 
-    document.getElementById("nombreArticulo").value="";
-    document.getElementById("precioArticulo").value="";
-
-    cargarArticulos();
-
-  }catch(e){
-    console.log("Error protegido articulos");
-  }
-
+  cargarArticulos();
 }
 
 window.cargarArticulos = async function(){
 
-  try{
+  const lista = document.getElementById("listaArticulos");
+  lista.innerHTML="";
 
-    const lista = document.getElementById("listaArticulos");
-    lista.innerHTML="";
+  const querySnapshot = await getDocs(collection(db,"articulos"));
 
-    const querySnapshot = await getDocs(collection(db,"articulos"));
+  querySnapshot.forEach(doc=>{
 
-    querySnapshot.forEach(doc=>{
+    const data = doc.data();
 
-      const data = doc.data();
+    if(!data.nombre) return;
 
-      if(!data.nombre || !data.precio) return;
-
-      lista.innerHTML += `
-        <div class="item">
-          ${data.nombre} - ${data.precio} €
-        </div>
-      `;
-
-    });
-
-  }catch(e){
-    console.log("Error protegido carga articulos");
-  }
-
+    lista.innerHTML += `
+      <div class="item">
+        ${data.nombre} — ${data.precio} €
+      </div>
+    `;
+  });
 }
 
-/* ---------- PROVEEDORES BLINDADO ---------- */
+/* ---------- PROVEEDORES ---------- */
 
 window.guardarProveedor = async function(){
 
-  try{
+  const nombre = document.getElementById("nombreProveedor").value.trim();
+  const telefono = document.getElementById("telefonoProveedor").value.trim();
 
-    const nombre = document.getElementById("nombreProveedor").value.trim();
-    const telefono = document.getElementById("telefonoProveedor").value.trim();
+  if(nombre === "") return;
 
-    if(nombre === "") return;
+  await addDoc(collection(db,"proveedores"),{
+    nombre,
+    telefono,
+    fecha: new Date().toISOString()
+  });
 
-    await addDoc(collection(db,"proveedores"),{
-      nombre: nombre,
-      telefono: telefono,
-      fecha: new Date().toISOString()
-    });
+  document.getElementById("nombreProveedor").value="";
+  document.getElementById("telefonoProveedor").value="";
 
-    document.getElementById("nombreProveedor").value="";
-    document.getElementById("telefonoProveedor").value="";
-
-    cargarProveedores();
-
-  }catch(e){
-    console.log("Error protegido proveedores");
-  }
-
+  cargarProveedores();
 }
 
 window.cargarProveedores = async function(){
 
-  try{
+  const lista = document.getElementById("listaProveedores");
+  lista.innerHTML="";
 
-    const lista = document.getElementById("listaProveedores");
-    lista.innerHTML="";
+  const querySnapshot = await getDocs(collection(db,"proveedores"));
 
-    const querySnapshot = await getDocs(collection(db,"proveedores"));
+  querySnapshot.forEach(doc=>{
 
-    querySnapshot.forEach(doc=>{
+    const data = doc.data();
 
-      const data = doc.data();
+    if(!data.nombre) return;
 
-      if(!data.nombre) return;
-
-      lista.innerHTML += `
-        <div class="item">
-          ${data.nombre} - ${data.telefono || ""}
-        </div>
-      `;
-
-    });
-
-  }catch(e){
-    console.log("Error protegido carga proveedores");
-  }
-
+    lista.innerHTML += `
+      <div class="item">
+        ${data.nombre} — ${data.telefono || ""}
+      </div>
+    `;
+  });
 }
 
 /* ---------- NAVEGACION ---------- */
@@ -161,34 +131,56 @@ window.ir = function(panel){
 <style>
 
 body{
-background:#000;
-color:white;
+background:#0b0b0b;
+color:#ffffff;
 font-family:Arial;
+margin:0;
+}
+
+.container{
+max-width:600px;
+margin:auto;
 padding:20px;
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
 }
 
 button{
 width:100%;
 padding:15px;
-margin:5px 0;
-background:#1a1a1a;
+margin-top:10px;
+background:#1f1f1f;
 color:white;
 border:none;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#2c2c2c;
 }
 
 input{
 width:100%;
 padding:12px;
-margin:5px 0;
-background:#111;
+margin-top:10px;
+background:#141414;
 color:white;
 border:none;
 }
 
 .item{
-background:#111;
+background:#141414;
 padding:12px;
-margin-top:5px;
+margin-top:8px;
+}
+
+.volver{
+background:#101010;
+margin-bottom:20px;
 }
 
 </style>
@@ -196,6 +188,8 @@ margin-top:5px;
 </head>
 
 <body>
+
+<div class="container">
 
 <div id="principal">
 
@@ -208,7 +202,7 @@ margin-top:5px;
 
 <div id="articulos" style="display:none">
 
-<button onclick="ir('principal')">← Volver</button>
+<button class="volver" onclick="ir('principal')">← Volver</button>
 
 <h2>Artículos</h2>
 
@@ -223,7 +217,7 @@ margin-top:5px;
 
 <div id="proveedores" style="display:none">
 
-<button onclick="ir('principal')">← Volver</button>
+<button class="volver" onclick="ir('principal')">← Volver</button>
 
 <h2>Proveedores</h2>
 
@@ -236,6 +230,7 @@ margin-top:5px;
 
 </div>
 
+</div>
+
 </body>
 </html>
-  
