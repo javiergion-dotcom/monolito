@@ -8,100 +8,146 @@
 <style>
 
 body{
-    margin:0;
-    background:#0a0a0a;
-    font-family:Arial, Helvetica, sans-serif;
-    color:white;
+margin:0;
+background:#0a0a0a;
+font-family:Arial;
+color:white;
 }
 
 .header{
-    text-align:center;
-    padding:30px;
-    font-size:28px;
-    letter-spacing:2px;
-}
-
-.sub{
-    text-align:center;
-    color:#00ffcc;
-    margin-bottom:30px;
+text-align:center;
+padding:30px;
+font-size:28px;
 }
 
 .panel{
-    max-width:400px;
-    margin:auto;
+max-width:400px;
+margin:auto;
 }
 
 .btn{
-    display:block;
-    width:100%;
-    padding:15px;
-    margin:10px 0;
-    background:#111;
-    border:1px solid #333;
-    color:white;
-    font-size:18px;
-    cursor:pointer;
+display:block;
+width:100%;
+padding:15px;
+margin:10px 0;
+background:#111;
+border:1px solid #333;
+color:white;
+font-size:18px;
+cursor:pointer;
 }
 
 .btn:hover{
-    background:#00ffcc;
-    color:black;
+background:#00ffcc;
+color:black;
 }
 
-.footer{
-    text-align:center;
-    margin-top:40px;
-    color:#666;
-    font-size:12px;
+.pantalla{
+display:none;
+padding:20px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+background:#111;
+border:1px solid #333;
+color:white;
+}
+
+.guardar{
+background:#00ffcc;
+border:none;
+padding:12px;
+cursor:pointer;
+width:100%;
 }
 
 </style>
+
 </head>
 
 <body>
+
+<div id="inicio">
 
 <div class="header">
 MONOLITO GPT PRO
 </div>
 
-<div class="sub">
-Panel principal
-</div>
-
 <div class="panel">
 
-<button class="btn" onclick="abrir('pedidos')">
-Pedidos
-</button>
-
-<button class="btn" onclick="abrir('proveedores')">
-Proveedores
-</button>
-
-<button class="btn" onclick="abrir('articulos')">
+<button class="btn" onclick="abrirArticulos()">
 Artículos
 </button>
 
-<button class="btn" onclick="abrir('ventas')">
+<button class="btn">
+Proveedores
+</button>
+
+<button class="btn">
+Pedidos
+</button>
+
+<button class="btn">
 Ventas
 </button>
 
-<button class="btn" onclick="abrir('diario')">
+<button class="btn">
 Diario
 </button>
 
 </div>
 
-<div class="footer">
-Sistema operativo estable
 </div>
+
+
+<div id="articulos" class="pantalla">
+
+<h2>Artículos</h2>
+
+<input id="nombre" placeholder="Nombre del artículo">
+
+<button class="guardar" onclick="guardarArticulo()">
+Guardar artículo
+</button>
+
+<button class="guardar" onclick="volver()">
+Volver
+</button>
+
+</div>
+
 
 <script>
 
-function abrir(modulo){
+function abrirArticulos(){
 
-    alert("Módulo: " + modulo + " (siguiente fase)");
+document.getElementById("inicio").style.display="none";
+document.getElementById("articulos").style.display="block";
+
+}
+
+function volver(){
+
+document.getElementById("articulos").style.display="none";
+document.getElementById("inicio").style.display="block";
+
+}
+
+function guardarArticulo(){
+
+let nombre = document.getElementById("nombre").value;
+
+if(nombre==""){
+alert("Escribe un nombre");
+return;
+}
+
+alert("Artículo guardado: " + nombre);
+
+document.getElementById("nombre").value="";
 
 }
 
