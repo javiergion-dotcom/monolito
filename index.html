@@ -2,59 +2,84 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LIBRO - MONOLITO</title>
+<title>MONOLITO</title>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+  authDomain: "monolito-ed87d.firebaseapp.com",
+  projectId: "monolito-ed87d",
+  storageBucket: "monolito-ed87d.firebasestorage.app",
+  messagingSenderId: "737849584362",
+  appId: "1:737849584362:web:3d1821bedcd64080cf8593"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+window.guardarArticulo = async function() {
+
+  const nombre = document.getElementById("nombre").value;
+
+  if(nombre == "") return;
+
+  await addDoc(collection(db, "articulos"), {
+    nombre: nombre,
+    fecha: new Date()
+  });
+
+  document.getElementById("nombre").value = "";
+
+};
+
+
+// MOSTRAR EN TIEMPO REAL
+
+onSnapshot(collection(db, "articulos"), (snapshot) => {
+
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  snapshot.forEach(doc => {
+
+    const div = document.createElement("div");
+    div.textContent = doc.data().nombre;
+    lista.appendChild(div);
+
+  });
+
+});
+
+</script>
 
 <style>
 
-body{
-margin:0;
-font-family:Segoe UI;
-background:#f4f6f8;
+body {
+  font-family: Arial;
+  padding: 20px;
 }
 
-#header{
-background:#2c3e50;
-color:white;
-padding:18px;
-font-size:22px;
+input {
+  font-size: 20px;
+  padding: 10px;
 }
 
-#contenido{
-padding:20px;
-}
-
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-font-size:16px;
-}
-
-button{
-padding:12px;
-margin-top:10px;
-font-size:16px;
-cursor:pointer;
-}
-
-#guardar{
-background:#27ae60;
-color:white;
-border:none;
-}
-
-#volver{
-background:#7f8c8d;
-color:white;
-border:none;
-}
-
-.item{
-background:white;
-padding:10px;
-margin-top:8px;
-border-radius:6px;
+button {
+  font-size: 20px;
+  padding: 10px;
 }
 
 </style>
@@ -63,112 +88,12 @@ border-radius:6px;
 
 <body>
 
-<div id="header">
-LIBRO
-</div>
+<h1>Artículos</h1>
 
-<div id="contenido">
-
-<input id="nombre" placeholder="Nombre del artículo">
-
-<button id="guardar" onclick="guardarArticulo()">
-Guardar artículo
-</button>
-
-<button id="volver"
-onclick="window.location.href='index.html'">
-Volver
-</button>
+<input id="nombre" placeholder="Nombre artículo">
+<button onclick="guardarArticulo()">Guardar</button>
 
 <div id="lista"></div>
 
-</div>
-
-<script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-const firebaseConfig = {
-
-apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
-
-authDomain: "monolito-ed87d.firebaseapp.com",
-
-projectId: "monolito-ed87d",
-
-storageBucket: "monolito-ed87d.appspot.com",
-
-messagingSenderId: "737849584362",
-
-appId: "1:737849584362:web:3d1821bedcd64080cf8593"
-
-};
-
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-
-window.guardarArticulo = async function(){
-
-const nombre =
-document.getElementById("nombre").value;
-
-if(!nombre) return;
-
-await addDoc(
-collection(db,"articulos"),
-{ nombre: nombre }
-);
-
-document.getElementById("nombre").value="";
-
-cargarArticulos();
-
-}
-
-
-async function cargarArticulos(){
-
-const lista =
-document.getElementById("lista");
-
-lista.innerHTML="";
-
-const querySnapshot =
-await getDocs(collection(db,"articulos"));
-
-querySnapshot.forEach(doc => {
-
-const div =
-document.createElement("div");
-
-div.className="item";
-
-div.textContent =
-doc.data().nombre;
-
-lista.appendChild(div);
-
-});
-
-}
-
-
-cargarArticulos();
-
-</script>
-
 </body>
-</html>   
+</html>
