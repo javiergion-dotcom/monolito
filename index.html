@@ -1,23 +1,111 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MONOLITO GPT PRO</title>
+
 <style>
+
 body{
-background:#111;
-color:white;
-font-family:Arial;
-text-align:center;
-margin-top:100px;
+    margin:0;
+    background:#0a0a0a;
+    font-family:Arial, Helvetica, sans-serif;
+    color:white;
 }
+
+.header{
+    text-align:center;
+    padding:30px;
+    font-size:28px;
+    letter-spacing:2px;
+}
+
+.sub{
+    text-align:center;
+    color:#00ffcc;
+    margin-bottom:30px;
+}
+
+.panel{
+    max-width:400px;
+    margin:auto;
+}
+
+.btn{
+    display:block;
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    background:#111;
+    border:1px solid #333;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:#00ffcc;
+    color:black;
+}
+
+.footer{
+    text-align:center;
+    margin-top:40px;
+    color:#666;
+    font-size:12px;
+}
+
 </style>
 </head>
+
 <body>
 
-<h1>MONOLITO GPT PRO</h1>
-<p>Sistema activo</p>
+<div class="header">
+MONOLITO GPT PRO
+</div>
+
+<div class="sub">
+Panel principal
+</div>
+
+<div class="panel">
+
+<button class="btn" onclick="abrir('pedidos')">
+Pedidos
+</button>
+
+<button class="btn" onclick="abrir('proveedores')">
+Proveedores
+</button>
+
+<button class="btn" onclick="abrir('articulos')">
+Artículos
+</button>
+
+<button class="btn" onclick="abrir('ventas')">
+Ventas
+</button>
+
+<button class="btn" onclick="abrir('diario')">
+Diario
+</button>
+
+</div>
+
+<div class="footer">
+Sistema operativo estable
+</div>
+
+<script>
+
+function abrir(modulo){
+
+    alert("Módulo: " + modulo + " (siguiente fase)");
+
+}
+
+</script>
 
 </body>
 </html>
