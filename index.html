@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -29,58 +28,80 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* ---------- ARTICULOS ---------- */
+
 window.guardarArticulo = async function(){
 
-  const nombre = document.getElementById("nombre").value;
-  const precio = document.getElementById("precio").value;
+  const nombre = document.getElementById("nombreArticulo").value;
+  const precio = document.getElementById("precioArticulo").value;
 
-  if(!nombre || !precio){
-    alert("Completa los datos");
-    return;
-  }
+  if(!nombre || !precio) return;
 
-  await addDoc(collection(db, "articulos"), {
-    nombre: nombre,
-    precio: precio
+  await addDoc(collection(db,"articulos"),{
+    nombre,
+    precio
   });
 
-  document.getElementById("nombre").value="";
-  document.getElementById("precio").value="";
-
   cargarArticulos();
-
 }
 
 window.cargarArticulos = async function(){
 
-  const lista = document.getElementById("lista");
+  const lista=document.getElementById("listaArticulos");
   lista.innerHTML="";
 
-  const querySnapshot = await getDocs(collection(db, "articulos"));
+  const querySnapshot=await getDocs(collection(db,"articulos"));
 
-  querySnapshot.forEach((doc) => {
-
-    const data = doc.data();
-
-    lista.innerHTML += `
-      <div class="item">
-        ${data.nombre} - ${data.precio} €
-      </div>
-    `;
-
+  querySnapshot.forEach(doc=>{
+    const data=doc.data();
+    lista.innerHTML+=`<div class="item">${data.nombre} - ${data.precio} €</div>`;
   });
 
 }
 
-window.mostrarArticulos = function(){
-  document.getElementById("principal").style.display="none";
-  document.getElementById("articulosPanel").style.display="block";
-  cargarArticulos();
+/* ---------- PROVEEDORES ---------- */
+
+window.guardarProveedor = async function(){
+
+  const nombre=document.getElementById("nombreProveedor").value;
+  const telefono=document.getElementById("telefonoProveedor").value;
+
+  if(!nombre) return;
+
+  await addDoc(collection(db,"proveedores"),{
+    nombre,
+    telefono
+  });
+
+  cargarProveedores();
 }
 
-window.volver = function(){
-  document.getElementById("principal").style.display="block";
-  document.getElementById("articulosPanel").style.display="none";
+window.cargarProveedores = async function(){
+
+  const lista=document.getElementById("listaProveedores");
+  lista.innerHTML="";
+
+  const querySnapshot=await getDocs(collection(db,"proveedores"));
+
+  querySnapshot.forEach(doc=>{
+    const data=doc.data();
+    lista.innerHTML+=`<div class="item">${data.nombre} - ${data.telefono}</div>`;
+  });
+
+}
+
+/* ---------- NAVEGACION ---------- */
+
+window.ir=function(panel){
+
+  document.getElementById("principal").style.display="none";
+  document.getElementById("articulos").style.display="none";
+  document.getElementById("proveedores").style.display="none";
+
+  document.getElementById(panel).style.display="block";
+
+  if(panel=="articulos") cargarArticulos();
+  if(panel=="proveedores") cargarProveedores();
 }
 
 </script>
@@ -91,7 +112,6 @@ body{
 background:#000;
 color:white;
 font-family:Arial;
-margin:0;
 padding:20px;
 }
 
@@ -102,12 +122,11 @@ margin:5px 0;
 background:#1a1a1a;
 color:white;
 border:none;
-font-size:18px;
 }
 
 input{
 width:100%;
-padding:12px;
+padding:10px;
 margin:5px 0;
 background:#111;
 color:white;
@@ -116,7 +135,7 @@ border:none;
 
 .item{
 background:#111;
-padding:12px;
+padding:10px;
 margin-top:5px;
 }
 
@@ -130,28 +149,38 @@ margin-top:5px;
 
 <h1>MONOLITO GPT PRO</h1>
 
-<button onclick="mostrarArticulos()">
-Artículos
-</button>
+<button onclick="ir('articulos')">Artículos</button>
+<button onclick="ir('proveedores')">Proveedores</button>
 
 </div>
 
-<div id="articulosPanel" style="display:none">
+<div id="articulos" style="display:none">
 
-<button onclick="volver()">
-← Volver
-</button>
+<button onclick="ir('principal')">← Volver</button>
 
-<h2>Nuevo artículo</h2>
+<h2>Artículos</h2>
 
-<input id="nombre" placeholder="Nombre">
-<input id="precio" placeholder="Precio">
+<input id="nombreArticulo" placeholder="Nombre">
+<input id="precioArticulo" placeholder="Precio">
 
-<button onclick="guardarArticulo()">
-Guardar artículo
-</button>
+<button onclick="guardarArticulo()">Guardar artículo</button>
 
-<div id="lista"></div>
+<div id="listaArticulos"></div>
+
+</div>
+
+<div id="proveedores" style="display:none">
+
+<button onclick="ir('principal')">← Volver</button>
+
+<h2>Proveedores</h2>
+
+<input id="nombreProveedor" placeholder="Nombre proveedor">
+<input id="telefonoProveedor" placeholder="Teléfono">
+
+<button onclick="guardarProveedor()">Guardar proveedor</button>
+
+<div id="listaProveedores"></div>
 
 </div>
 
