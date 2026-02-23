@@ -1,169 +1,22 @@
-   <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
-  authDomain: "monolito-ed87d.firebaseapp.com",
-  projectId: "monolito-ed87d",
-  storageBucket: "monolito-ed87d.firebasestorage.app",
-  messagingSenderId: "737849584362",
-  appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
-};
-
-let db;
-
-try{
-  const app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-}catch(e){
-  console.log("Sistema protegido");
+.container{
+max-width:600px;
+margin:auto;
 }
 
-/* ARTICULOS */
-
-window.guardarArticulo = async function(){
-
-  try{
-
-    const nombre = document.getElementById("nombreArticulo")?.value?.trim();
-    const precio = document.getElementById("precioArticulo")?.value?.trim();
-
-    if(!nombre || !precio) return;
-
-    await addDoc(collection(db,"articulos"),{
-      nombre,
-      precio,
-      fecha: Date.now()
-    });
-
-    document.getElementById("nombreArticulo").value="";
-    document.getElementById("precioArticulo").value="";
-
-    cargarArticulos();
-
-  }catch(e){
-    console.log("Protegido");
-  }
+h1{
+text-align:center;
+margin-bottom:30px;
 }
 
-window.cargarArticulos = async function(){
-
-  try{
-
-    const lista = document.getElementById("listaArticulos");
-
-    if(!lista) return;
-
-    lista.innerHTML="";
-
-    const snapshot = await getDocs(collection(db,"articulos"));
-
-    snapshot.forEach(doc=>{
-
-      try{
-
-        const data = doc.data();
-
-        if(!data?.nombre) return;
-
-        const div = document.createElement("div");
-        div.className="item";
-        div.textContent = data.nombre + " — " + data.precio + " €";
-
-        lista.appendChild(div);
-
-      }catch(e){}
-    });
-
-  }catch(e){}
+button{
+cursor:pointer;
+transition:0.2s;
 }
 
-/* PROVEEDORES */
-
-window.guardarProveedor = async function(){
-
-  try{
-
-    const nombre = document.getElementById("nombreProveedor")?.value?.trim();
-    const telefono = document.getElementById("telefonoProveedor")?.value?.trim();
-
-    if(!nombre) return;
-
-    await addDoc(collection(db,"proveedores"),{
-      nombre,
-      telefono,
-      fecha: Date.now()
-    });
-
-    document.getElementById("nombreProveedor").value="";
-    document.getElementById("telefonoProveedor").value="";
-
-    cargarProveedores();
-
-  }catch(e){}
+button:hover{
+background:#333;
 }
 
-window.cargarProveedores = async function(){
-
-  try{
-
-    const lista = document.getElementById("listaProveedores");
-
-    if(!lista) return;
-
-    lista.innerHTML="";
-
-    const snapshot = await getDocs(collection(db,"proveedores"));
-
-    snapshot.forEach(doc=>{
-
-      try{
-
-        const data = doc.data();
-
-        if(!data?.nombre) return;
-
-        const div = document.createElement("div");
-        div.className="item";
-        div.textContent = data.nombre + " — " + (data.telefono || "");
-
-        lista.appendChild(div);
-
-      }catch(e){}
-    });
-
-  }catch(e){}
+.item{
+border-left:3px solid #00ffaa;
 }
-
-/* NAVEGACION */
-
-window.ir = function(panel){
-
-  try{
-
-    ["principal","articulos","proveedores"].forEach(id=>{
-
-      const el = document.getElementById(id);
-
-      if(el) el.style.display="none";
-
-    });
-
-    const destino = document.getElementById(panel);
-
-    if(destino) destino.style.display="block";
-
-    if(panel=="articulos") cargarArticulos();
-    if(panel=="proveedores") cargarProveedores();
-
-  }catch(e){}
-}
-
-</script>   
