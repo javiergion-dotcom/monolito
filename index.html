@@ -3,18 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>MONOLITO GPT PRO</title>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
@@ -28,173 +22,101 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.guardarArticulo = async function(){
+window.ir = function(p){
 
-  const nombre = document.getElementById("nombreArticulo").value.trim();
-  const precio = document.getElementById("precioArticulo").value.trim();
+document.getElementById("principal").style.display="none";
+document.getElementById("articulos").style.display="none";
+document.getElementById("proveedores").style.display="none";
 
-  if(!nombre || !precio) return;
+document.getElementById(p).style.display="block";
 
-  await addDoc(collection(db,"articulos"),{
-    nombre,
-    precio,
-    fecha:new Date().toISOString()
-  });
-
-  document.getElementById("nombreArticulo").value="";
-  document.getElementById("precioArticulo").value="";
-
-  cargarArticulos();
+if(p==="articulos") cargarArticulos();
+if(p==="proveedores") cargarProveedores();
 }
 
-window.cargarArticulos = async function(){
+window.guardarArticulo = async function(){
 
-  const lista = document.getElementById("listaArticulos");
+const n=document.getElementById("nombreArticulo").value.trim();
+const p=document.getElementById("precioArticulo").value.trim();
 
-  lista.innerHTML="";
+if(!n||!p) return;
 
-  const querySnapshot = await getDocs(collection(db,"articulos"));
+await addDoc(collection(db,"articulos"),{nombre:n,precio:p});
 
-  querySnapshot.forEach(doc=>{
+cargarArticulos();
+}
 
-    const data = doc.data();
+async function cargarArticulos(){
 
-    lista.innerHTML+=`
-    <div class="item">
-    ${data.nombre} - ${data.precio} €
-    </div>`;
-  });
+const l=document.getElementById("listaArticulos");
+l.innerHTML="";
+
+const s=await getDocs(collection(db,"articulos"));
+
+s.forEach(d=>{
+const x=d.data();
+l.innerHTML+=`<div>${x.nombre} - ${x.precio} €</div>`;
+});
 }
 
 window.guardarProveedor = async function(){
 
-  const nombre = document.getElementById("nombreProveedor").value.trim();
-  const telefono = document.getElementById("telefonoProveedor").value.trim();
+const n=document.getElementById("nombreProveedor").value.trim();
+const t=document.getElementById("telefonoProveedor").value.trim();
 
-  if(!nombre) return;
+if(!n) return;
 
-  await addDoc(collection(db,"proveedores"),{
-    nombre,
-    telefono,
-    fecha:new Date().toISOString()
-  });
+await addDoc(collection(db,"proveedores"),{nombre:n,telefono:t});
 
-  document.getElementById("nombreProveedor").value="";
-  document.getElementById("telefonoProveedor").value="";
-
-  cargarProveedores();
+cargarProveedores();
 }
 
-window.cargarProveedores = async function(){
+async function cargarProveedores(){
 
-  const lista = document.getElementById("listaProveedores");
+const l=document.getElementById("listaProveedores");
+l.innerHTML="";
 
-  lista.innerHTML="";
+const s=await getDocs(collection(db,"proveedores"));
 
-  const querySnapshot = await getDocs(collection(db,"proveedores"));
-
-  querySnapshot.forEach(doc=>{
-
-    const data = doc.data();
-
-    lista.innerHTML+=`
-    <div class="item">
-    ${data.nombre} - ${data.telefono || ""}
-    </div>`;
-  });
-}
-
-window.ir = function(panel){
-
-  document.getElementById("principal").style.display="none";
-  document.getElementById("articulos").style.display="none";
-  document.getElementById("proveedores").style.display="none";
-
-  document.getElementById(panel).style.display="block";
-
-  if(panel=="articulos") cargarArticulos();
-  if(panel=="proveedores") cargarProveedores();
+s.forEach(d=>{
+const x=d.data();
+l.innerHTML+=`<div>${x.nombre} - ${x.telefono||""}</div>`;
+});
 }
 
 </script>
 
 <style>
-
-body{
-background:#000;
-color:white;
-font-family:Arial;
-padding:20px;
-}
-
-button{
-width:100%;
-padding:15px;
-margin:5px 0;
-background:#1a1a1a;
-color:white;
-border:none;
-}
-
-input{
-width:100%;
-padding:12px;
-margin:5px 0;
-background:#111;
-color:white;
-border:none;
-}
-
-.item{
-background:#111;
-padding:12px;
-margin-top:5px;
-}
-
+body{background:#000;color:#fff;font-family:Arial;padding:20px}
+button,input{width:100%;padding:12px;margin:5px 0}
 </style>
 
 </head>
-
 <body>
 
 <div id="principal">
-
 <h1>MONOLITO GPT PRO</h1>
-
 <button onclick="ir('articulos')">Artículos</button>
 <button onclick="ir('proveedores')">Proveedores</button>
-
 </div>
 
 <div id="articulos" style="display:none">
-
 <button onclick="ir('principal')">← Volver</button>
-
-<h2>Artículos</h2>
-
-<input id="nombreArticulo" placeholder="Nombre artículo">
+<input id="nombreArticulo" placeholder="Nombre">
 <input id="precioArticulo" placeholder="Precio">
-
-<button onclick="guardarArticulo()">Guardar artículo</button>
-
+<button onclick="guardarArticulo()">Guardar</button>
 <div id="listaArticulos"></div>
-
 </div>
 
 <div id="proveedores" style="display:none">
-
 <button onclick="ir('principal')">← Volver</button>
-
-<h2>Proveedores</h2>
-
-<input id="nombreProveedor" placeholder="Nombre proveedor">
+<input id="nombreProveedor" placeholder="Nombre">
 <input id="telefonoProveedor" placeholder="Teléfono">
-
-<button onclick="guardarProveedor()">Guardar proveedor</button>
-
+<button onclick="guardarProveedor()">Guardar</button>
 <div id="listaProveedores"></div>
-
 </div>
 
 </body>
 </html>
+  
+  
