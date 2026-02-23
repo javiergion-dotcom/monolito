@@ -1,6 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONOLITO GPT PRO</title>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+authDomain: "monolito-ed87d.firebaseapp.com",
+projectId: "monolito-ed87d",
+storageBucket: "monolito-ed87d.firebasestorage.app",
+messagingSenderId: "737849584362",
+appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
+};
+
+let db;
+
+try{
+const app = initializeApp(firebaseConfig);
+db = getFirestore(app);
+}catch(e){
+console.log("Sistema protegido");
+}
+
+/* ---------- ARTICULOS ---------- */
+
+window.guardarArticulo = async function(){
+
+try{
+
+const nombre = document.getElementById("nombreArticulo")?.value?.trim();
+const precio = document.getElementById("precioArticulo")?.value?.trim();
+
+if(!nombre || !precio) return;
+
+await addDoc(collection(db,"articulos"),{
+nombre,
+precio,
+fecha: Date.now()
+});
+
+document.getElementById("nombreArticulo").value="";
+document.getElementById("precioArticulo").value="";
+
+cargarArticulos();
+
+}catch(e){}
+}
+
+window.cargarArticulos = async function(){
+
+try{
+
+const lista = document.getElementById("listaArticulos");
+
+if(!lista) return;
+
+lista.innerHTML="";
+
+const snapshot = await getDocs(collection(db,"articulos"));
+
+snapshot.forEach(doc=>{
+
+try{
+
+const data = doc.data();
+
+if(!data?.nombre) return;
+
+const div = document.createElement("div");
+div.className="item";
+div.textContent = data.nombre + " — " + data.precio + " €";
+
+lista.appendChild(div);
+
+}catch(e){}
+});
+
+}catch(e){}
+}
+
+/* ---------- PROVEEDORES ---------- */
+
+window.guardarProveedor = async function(){
+
+try{
+
+const nombre = document.getElementById("nombreProveedor")?.value?.trim();
+const telefono = document.getElementById("telefonoProveedor")?.value?.trim();
+
+if(!nombre) return;
+
+await addDoc(collection(db,"proveedores"),{
+nombre,
+telefono,
+fecha: Date.now()
+});
+
+document.getElementById("nombreProveedor").value="";
+document.getElementById("telefonoProveedor").value="";
+
+cargarProveedores();
+
+}catch(e){}
+}
+
+window.cargarProveedores = async function(){
+
+try{
+
+const lista = document.getElementById("listaProveedores");
+
+if(!lista) return;
+
+lista.innerHTML="";
+
+const snapshot = await getDocs(collection(db,"proveedores"));
+
+snapshot.forEach(doc=>{
+
+try{
+
+const data = doc.data();
+
+if(!data?.nombre) return;
+
+const div = document.createElement("div");
+div.className="item";
+div.textContent = data.nombre + " — " + (data.telefono || "");
+
+lista.appendChild(div);
+
+}catch(e){}
+});
+
+}catch(e){}
+}
+
+/* ---------- NAVEGACION ---------- */
+
+window.ir = function(panel){
+
+try{
+
+["principal","articulos","proveedores"].forEach(id=>{
+
+const el = document.getElementById(id);
+
+if(el) el.style.display="none";
+
+});
+
+const destino = document.getElementById(panel);
+
+if(destino) destino.style.display="block";
+
+if(panel==="articulos") cargarArticulos();
+if(panel==="proveedores") cargarProveedores();
+
+}catch(e){}
+}
+
+</script>
+
+<style>
+
+body{
+background:#0b0b0b;
+color:#ffffff;
+font-family:Arial;
+margin:0;
+}
+
 .container{
 max-width:600px;
 margin:auto;
+padding:20px;
 }
 
 h1{
@@ -8,7 +193,18 @@ text-align:center;
 margin-bottom:30px;
 }
 
+h2{
+margin-top:0;
+}
+
 button{
+width:100%;
+padding:15px;
+margin-top:10px;
+background:#1f1f1f;
+color:white;
+border:none;
+font-size:16px;
 cursor:pointer;
 transition:0.2s;
 }
@@ -17,6 +213,17 @@ button:hover{
 background:#333;
 }
 
-.item{
-border-left:3px solid #00ffaa;
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#141414;
+color:white;
+border:none;
 }
+
+.item{
+background:#141414;
+padding:12px;
+margin-top:8px;
+border-left:3px solid #00ffaa
