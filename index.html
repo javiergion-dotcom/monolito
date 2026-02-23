@@ -3,87 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONOLITO GPT-Pro</title>
+<title>MONOLITO</title>
 
 <style>
 
 body{
     margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:#e9e1d3;
+    font-family:Segoe UI, Arial, sans-serif;
+    background:#f4f6f8;
     display:flex;
     justify-content:center;
     align-items:center;
     height:100vh;
 }
 
-#panel{
-    width:340px;
-    background:#f3eadb;
-    border-radius:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+#app{
+    width:360px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.15);
     overflow:hidden;
 }
 
-#titulo{
-    background:#a3472a;
+#header{
+    background:#2c3e50;
     color:white;
+    padding:18px;
     text-align:center;
-    font-size:30px;
+    font-size:24px;
     font-weight:bold;
-    padding:16px;
 }
 
 #info{
-    background:#e6dccb;
-    text-align:center;
+    background:#ecf0f1;
     padding:10px;
+    text-align:center;
+    font-size:14px;
 }
 
-.modulo{
-    position:relative;
-    padding:18px 20px;
-    font-size:20px;
-    font-weight:bold;
+.menu{
+    display:flex;
+    flex-direction:column;
+}
+
+.boton{
+    padding:18px;
+    font-size:18px;
+    border:none;
+    border-bottom:1px solid #e0e0e0;
+    background:white;
     cursor:pointer;
+    text-align:left;
 }
 
-.pincel{
-    position:absolute;
-    left:10px;
-    right:10px;
-    top:6px;
-    bottom:6px;
-    border-radius:12px;
-    opacity:0.6;
-    z-index:0;
+.boton:hover{
+    background:#f0f3f5;
 }
 
-.texto{
-    position:relative;
-    z-index:1;
+.boton:active{
+    background:#e2e6ea;
 }
 
-.libro .pincel{
-    background:#9fb6bb;
-}
-
-.proveedores .pincel{
-    background:#c9b2a1;
-}
-
-.ventas .pincel{
-    background:#d2c29f;
-}
-
-.documentos .pincel{
-    background:#bcbcbc;
-}
-
-#estado{
-    background:#e6dccb;
-    text-align:center;
+#footer{
+    background:#ecf0f1;
     padding:10px;
+    text-align:center;
+    font-size:13px;
+    color:#555;
 }
 
 </style>
@@ -92,53 +78,56 @@ body{
 
 <body>
 
-<div id="panel">
+<div id="app">
 
-<div id="titulo">MONOLITO</div>
+<div id="header">
+MONOLITO
+</div>
 
 <div id="info">
 Operador: Javier • Hora: <span id="hora"></span>
 </div>
 
-<div class="modulo libro" onclick="abrir('LIBRO')">
-<div class="pincel"></div>
-<div class="texto">📘 LIBRO</div>
+<div class="menu">
+
+<button class="boton" onclick="abrir('libro')">
+📘 LIBRO
+</button>
+
+<button class="boton" onclick="abrir('proveedores')">
+📦 PROVEEDORES
+</button>
+
+<button class="boton" onclick="abrir('ventas')">
+💰 VENTAS
+</button>
+
+<button class="boton" onclick="abrir('documentos')">
+📁 DOCUMENTOS
+</button>
+
 </div>
 
-<div class="modulo proveedores" onclick="abrir('PROVEEDORES')">
-<div class="pincel"></div>
-<div class="texto">📦 PROVEEDORES</div>
-</div>
-
-<div class="modulo ventas" onclick="abrir('VENTAS')">
-<div class="pincel"></div>
-<div class="texto">💰 VENTAS</div>
-</div>
-
-<div class="modulo documentos" onclick="abrir('DOCUMENTOS')">
-<div class="pincel"></div>
-<div class="texto">📁 DOCUMENTOS</div>
-</div>
-
-<div id="estado">
-● Sistema activo ● Sincronizado ● Autoguardado activo
+<div id="footer">
+Sistema activo • Conectado • Operativo
 </div>
 
 </div>
 
 <script>
 
-function abrir(nombre){
-    alert("Módulo "+nombre+" activado");
-}
-
 function actualizarHora(){
-    document.getElementById("hora").textContent =
-        new Date().toLocaleTimeString();
+    const ahora=new Date();
+    const hora=ahora.toLocaleTimeString();
+    document.getElementById("hora").textContent=hora;
 }
 
 setInterval(actualizarHora,1000);
 actualizarHora();
+
+function abrir(modulo){
+    alert("Abriendo módulo: " + modulo);
+}
 
 </script>
 
