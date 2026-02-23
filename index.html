@@ -1,122 +1,56 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONOLITO GPT PRO</title>
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
-  authDomain: "monolito-ed87d.firebaseapp.com",
-  projectId: "monolito-ed87d",
-  storageBucket: "monolito-ed87d.firebasestorage.app",
-  messagingSenderId: "737849584362",
-  appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.ir = function(p){
-
-document.getElementById("principal").style.display="none";
-document.getElementById("articulos").style.display="none";
-document.getElementById("proveedores").style.display="none";
-
-document.getElementById(p).style.display="block";
-
-if(p==="articulos") cargarArticulos();
-if(p==="proveedores") cargarProveedores();
-}
-
-window.guardarArticulo = async function(){
-
-const n=document.getElementById("nombreArticulo").value.trim();
-const p=document.getElementById("precioArticulo").value.trim();
-
-if(!n||!p) return;
-
-await addDoc(collection(db,"articulos"),{nombre:n,precio:p});
-
-cargarArticulos();
-}
-
-async function cargarArticulos(){
-
-const l=document.getElementById("listaArticulos");
-l.innerHTML="";
-
-const s=await getDocs(collection(db,"articulos"));
-
-s.forEach(d=>{
-const x=d.data();
-l.innerHTML+=`<div>${x.nombre} - ${x.precio} €</div>`;
-});
-}
-
-window.guardarProveedor = async function(){
-
-const n=document.getElementById("nombreProveedor").value.trim();
-const t=document.getElementById("telefonoProveedor").value.trim();
-
-if(!n) return;
-
-await addDoc(collection(db,"proveedores"),{nombre:n,telefono:t});
-
-cargarProveedores();
-}
-
-async function cargarProveedores(){
-
-const l=document.getElementById("listaProveedores");
-l.innerHTML="";
-
-const s=await getDocs(collection(db,"proveedores"));
-
-s.forEach(d=>{
-const x=d.data();
-l.innerHTML+=`<div>${x.nombre} - ${x.telefono||""}</div>`;
-});
-}
-
-</script>
-
 <style>
-body{background:#000;color:#fff;font-family:Arial;padding:20px}
-button,input{width:100%;padding:12px;margin:5px 0}
+
+body{
+background:#000000;
+color:#ffffff;
+font-family:Arial;
+margin:0;
+padding:20px;
+}
+
+.panel{
+max-width:500px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+margin-bottom:30px;
+font-weight:normal;
+}
+
+button{
+width:100%;
+padding:16px;
+margin-top:10px;
+background:#000000;
+color:#ffffff;
+border:1px solid #222;
+font-size:16px;
+}
+
+button:active{
+background:#111;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-top:10px;
+background:#000000;
+color:#ffffff;
+border:1px solid #222;
+}
+
+.card{
+background:#000000;
+padding:14px;
+margin-top:8px;
+border-bottom:1px solid #111;
+}
+
+.volver{
+margin-bottom:20px;
+}
+
 </style>
-
-</head>
-<body>
-
-<div id="principal">
-<h1>MONOLITO GPT PRO</h1>
-<button onclick="ir('articulos')">Artículos</button>
-<button onclick="ir('proveedores')">Proveedores</button>
-</div>
-
-<div id="articulos" style="display:none">
-<button onclick="ir('principal')">← Volver</button>
-<input id="nombreArticulo" placeholder="Nombre">
-<input id="precioArticulo" placeholder="Precio">
-<button onclick="guardarArticulo()">Guardar</button>
-<div id="listaArticulos"></div>
-</div>
-
-<div id="proveedores" style="display:none">
-<button onclick="ir('principal')">← Volver</button>
-<input id="nombreProveedor" placeholder="Nombre">
-<input id="telefonoProveedor" placeholder="Teléfono">
-<button onclick="guardarProveedor()">Guardar</button>
-<div id="listaProveedores"></div>
-</div>
-
-</body>
-</html>
-  
-  
