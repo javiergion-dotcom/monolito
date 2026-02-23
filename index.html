@@ -1,8 +1,8 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>MONOLITO</title>
+<title>LIBRO - MONOLITO</title>
 
 <script type="module">
 
@@ -11,7 +11,6 @@ import {
   getFirestore,
   collection,
   addDoc,
-  getDocs,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -34,7 +33,7 @@ window.guardarArticulo = async function() {
 
   const nombre = document.getElementById("nombre").value;
 
-  if(nombre == "") return;
+  if(!nombre) return;
 
   await addDoc(collection(db, "articulos"), {
     nombre: nombre,
@@ -46,17 +45,24 @@ window.guardarArticulo = async function() {
 };
 
 
-// MOSTRAR EN TIEMPO REAL
+// Mostrar artículos en tiempo real
 
 onSnapshot(collection(db, "articulos"), (snapshot) => {
 
   const lista = document.getElementById("lista");
+
   lista.innerHTML = "";
 
   snapshot.forEach(doc => {
 
     const div = document.createElement("div");
+
     div.textContent = doc.data().nombre;
+
+    div.style.padding = "8px";
+    div.style.background = "#ecf0f1";
+    div.style.marginTop = "5px";
+
     lista.appendChild(div);
 
   });
@@ -68,18 +74,21 @@ onSnapshot(collection(db, "articulos"), (snapshot) => {
 <style>
 
 body {
-  font-family: Arial;
+  font-family: Segoe UI;
   padding: 20px;
+  background: #f4f6f8;
 }
 
 input {
-  font-size: 20px;
+  font-size: 18px;
   padding: 10px;
+  width: 100%;
 }
 
 button {
-  font-size: 20px;
+  font-size: 18px;
   padding: 10px;
+  margin-top: 10px;
 }
 
 </style>
@@ -88,10 +97,21 @@ button {
 
 <body>
 
-<h1>Artículos</h1>
+<h2>LIBRO</h2>
 
 <input id="nombre" placeholder="Nombre artículo">
-<button onclick="guardarArticulo()">Guardar</button>
+
+<button onclick="guardarArticulo()">
+Guardar
+</button>
+
+<br><br>
+
+<button onclick="window.location.href='index.html'">
+Volver
+</button>
+
+<h3>Artículos:</h3>
 
 <div id="lista"></div>
 
