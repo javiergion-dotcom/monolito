@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONOLITO GPT PRO</title>
-
-<script type="module">
+   <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -21,216 +14,156 @@ const firebaseConfig = {
   projectId: "monolito-ed87d",
   storageBucket: "monolito-ed87d.firebasestorage.app",
   messagingSenderId: "737849584362",
-  appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593",
-  measurementId: "G-V8KHB086M3"
+  appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+let db;
 
-/* ---------- ARTICULOS ---------- */
+try{
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+}catch(e){
+  console.log("Sistema protegido");
+}
+
+/* ARTICULOS */
 
 window.guardarArticulo = async function(){
 
-  const nombre = document.getElementById("nombreArticulo").value.trim();
-  const precio = document.getElementById("precioArticulo").value.trim();
+  try{
 
-  if(nombre === "" || precio === "") return;
+    const nombre = document.getElementById("nombreArticulo")?.value?.trim();
+    const precio = document.getElementById("precioArticulo")?.value?.trim();
 
-  await addDoc(collection(db,"articulos"),{
-    nombre,
-    precio,
-    fecha: new Date().toISOString()
-  });
+    if(!nombre || !precio) return;
 
-  document.getElementById("nombreArticulo").value="";
-  document.getElementById("precioArticulo").value="";
+    await addDoc(collection(db,"articulos"),{
+      nombre,
+      precio,
+      fecha: Date.now()
+    });
 
-  cargarArticulos();
+    document.getElementById("nombreArticulo").value="";
+    document.getElementById("precioArticulo").value="";
+
+    cargarArticulos();
+
+  }catch(e){
+    console.log("Protegido");
+  }
 }
 
 window.cargarArticulos = async function(){
 
-  const lista = document.getElementById("listaArticulos");
-  lista.innerHTML="";
+  try{
 
-  const querySnapshot = await getDocs(collection(db,"articulos"));
+    const lista = document.getElementById("listaArticulos");
 
-  querySnapshot.forEach(doc=>{
+    if(!lista) return;
 
-    const data = doc.data();
+    lista.innerHTML="";
 
-    if(!data.nombre) return;
+    const snapshot = await getDocs(collection(db,"articulos"));
 
-    lista.innerHTML += `
-      <div class="item">
-        ${data.nombre} — ${data.precio} €
-      </div>
-    `;
-  });
+    snapshot.forEach(doc=>{
+
+      try{
+
+        const data = doc.data();
+
+        if(!data?.nombre) return;
+
+        const div = document.createElement("div");
+        div.className="item";
+        div.textContent = data.nombre + " — " + data.precio + " €";
+
+        lista.appendChild(div);
+
+      }catch(e){}
+    });
+
+  }catch(e){}
 }
 
-/* ---------- PROVEEDORES ---------- */
+/* PROVEEDORES */
 
 window.guardarProveedor = async function(){
 
-  const nombre = document.getElementById("nombreProveedor").value.trim();
-  const telefono = document.getElementById("telefonoProveedor").value.trim();
+  try{
 
-  if(nombre === "") return;
+    const nombre = document.getElementById("nombreProveedor")?.value?.trim();
+    const telefono = document.getElementById("telefonoProveedor")?.value?.trim();
 
-  await addDoc(collection(db,"proveedores"),{
-    nombre,
-    telefono,
-    fecha: new Date().toISOString()
-  });
+    if(!nombre) return;
 
-  document.getElementById("nombreProveedor").value="";
-  document.getElementById("telefonoProveedor").value="";
+    await addDoc(collection(db,"proveedores"),{
+      nombre,
+      telefono,
+      fecha: Date.now()
+    });
 
-  cargarProveedores();
+    document.getElementById("nombreProveedor").value="";
+    document.getElementById("telefonoProveedor").value="";
+
+    cargarProveedores();
+
+  }catch(e){}
 }
 
 window.cargarProveedores = async function(){
 
-  const lista = document.getElementById("listaProveedores");
-  lista.innerHTML="";
+  try{
 
-  const querySnapshot = await getDocs(collection(db,"proveedores"));
+    const lista = document.getElementById("listaProveedores");
 
-  querySnapshot.forEach(doc=>{
+    if(!lista) return;
 
-    const data = doc.data();
+    lista.innerHTML="";
 
-    if(!data.nombre) return;
+    const snapshot = await getDocs(collection(db,"proveedores"));
 
-    lista.innerHTML += `
-      <div class="item">
-        ${data.nombre} — ${data.telefono || ""}
-      </div>
-    `;
-  });
+    snapshot.forEach(doc=>{
+
+      try{
+
+        const data = doc.data();
+
+        if(!data?.nombre) return;
+
+        const div = document.createElement("div");
+        div.className="item";
+        div.textContent = data.nombre + " — " + (data.telefono || "");
+
+        lista.appendChild(div);
+
+      }catch(e){}
+    });
+
+  }catch(e){}
 }
 
-/* ---------- NAVEGACION ---------- */
+/* NAVEGACION */
 
 window.ir = function(panel){
 
-  document.getElementById("principal").style.display="none";
-  document.getElementById("articulos").style.display="none";
-  document.getElementById("proveedores").style.display="none";
+  try{
 
-  document.getElementById(panel).style.display="block";
+    ["principal","articulos","proveedores"].forEach(id=>{
 
-  if(panel=="articulos") cargarArticulos();
-  if(panel=="proveedores") cargarProveedores();
+      const el = document.getElementById(id);
+
+      if(el) el.style.display="none";
+
+    });
+
+    const destino = document.getElementById(panel);
+
+    if(destino) destino.style.display="block";
+
+    if(panel=="articulos") cargarArticulos();
+    if(panel=="proveedores") cargarProveedores();
+
+  }catch(e){}
 }
 
-</script>
-
-<style>
-
-body{
-background:#0b0b0b;
-color:#ffffff;
-font-family:Arial;
-margin:0;
-}
-
-.container{
-max-width:600px;
-margin:auto;
-padding:20px;
-}
-
-h1{
-text-align:center;
-margin-bottom:30px;
-}
-
-button{
-width:100%;
-padding:15px;
-margin-top:10px;
-background:#1f1f1f;
-color:white;
-border:none;
-cursor:pointer;
-font-size:16px;
-}
-
-button:hover{
-background:#2c2c2c;
-}
-
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-background:#141414;
-color:white;
-border:none;
-}
-
-.item{
-background:#141414;
-padding:12px;
-margin-top:8px;
-}
-
-.volver{
-background:#101010;
-margin-bottom:20px;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<div id="principal">
-
-<h1>MONOLITO GPT PRO</h1>
-
-<button onclick="ir('articulos')">Artículos</button>
-<button onclick="ir('proveedores')">Proveedores</button>
-
-</div>
-
-<div id="articulos" style="display:none">
-
-<button class="volver" onclick="ir('principal')">← Volver</button>
-
-<h2>Artículos</h2>
-
-<input id="nombreArticulo" placeholder="Nombre artículo">
-<input id="precioArticulo" placeholder="Precio">
-
-<button onclick="guardarArticulo()">Guardar artículo</button>
-
-<div id="listaArticulos"></div>
-
-</div>
-
-<div id="proveedores" style="display:none">
-
-<button class="volver" onclick="ir('principal')">← Volver</button>
-
-<h2>Proveedores</h2>
-
-<input id="nombreProveedor" placeholder="Nombre proveedor">
-<input id="telefonoProveedor" placeholder="Teléfono">
-
-<button onclick="guardarProveedor()">Guardar proveedor</button>
-
-<div id="listaProveedores"></div>
-
-</div>
-
-</div>
-
-</body>
-</html>
+</script>   
