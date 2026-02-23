@@ -28,71 +28,123 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ---------- ARTICULOS ---------- */
+/* ---------- ARTICULOS BLINDADO ---------- */
 
 window.guardarArticulo = async function(){
 
-  const nombre = document.getElementById("nombreArticulo").value;
-  const precio = document.getElementById("precioArticulo").value;
+  try{
 
-  if(!nombre || !precio) return;
+    const nombre = document.getElementById("nombreArticulo").value.trim();
+    const precio = document.getElementById("precioArticulo").value.trim();
 
-  await addDoc(collection(db,"articulos"),{
-    nombre,
-    precio
-  });
+    if(nombre === "" || precio === "") return;
 
-  cargarArticulos();
+    await addDoc(collection(db,"articulos"),{
+      nombre: nombre,
+      precio: precio,
+      fecha: new Date().toISOString()
+    });
+
+    document.getElementById("nombreArticulo").value="";
+    document.getElementById("precioArticulo").value="";
+
+    cargarArticulos();
+
+  }catch(e){
+    console.log("Error protegido articulos");
+  }
+
 }
 
 window.cargarArticulos = async function(){
 
-  const lista=document.getElementById("listaArticulos");
-  lista.innerHTML="";
+  try{
 
-  const querySnapshot=await getDocs(collection(db,"articulos"));
+    const lista = document.getElementById("listaArticulos");
+    lista.innerHTML="";
 
-  querySnapshot.forEach(doc=>{
-    const data=doc.data();
-    lista.innerHTML+=`<div class="item">${data.nombre} - ${data.precio} €</div>`;
-  });
+    const querySnapshot = await getDocs(collection(db,"articulos"));
+
+    querySnapshot.forEach(doc=>{
+
+      const data = doc.data();
+
+      if(!data.nombre || !data.precio) return;
+
+      lista.innerHTML += `
+        <div class="item">
+          ${data.nombre} - ${data.precio} €
+        </div>
+      `;
+
+    });
+
+  }catch(e){
+    console.log("Error protegido carga articulos");
+  }
 
 }
 
-/* ---------- PROVEEDORES ---------- */
+/* ---------- PROVEEDORES BLINDADO ---------- */
 
 window.guardarProveedor = async function(){
 
-  const nombre=document.getElementById("nombreProveedor").value;
-  const telefono=document.getElementById("telefonoProveedor").value;
+  try{
 
-  if(!nombre) return;
+    const nombre = document.getElementById("nombreProveedor").value.trim();
+    const telefono = document.getElementById("telefonoProveedor").value.trim();
 
-  await addDoc(collection(db,"proveedores"),{
-    nombre,
-    telefono
-  });
+    if(nombre === "") return;
 
-  cargarProveedores();
+    await addDoc(collection(db,"proveedores"),{
+      nombre: nombre,
+      telefono: telefono,
+      fecha: new Date().toISOString()
+    });
+
+    document.getElementById("nombreProveedor").value="";
+    document.getElementById("telefonoProveedor").value="";
+
+    cargarProveedores();
+
+  }catch(e){
+    console.log("Error protegido proveedores");
+  }
+
 }
 
 window.cargarProveedores = async function(){
 
-  const lista=document.getElementById("listaProveedores");
-  lista.innerHTML="";
+  try{
 
-  const querySnapshot=await getDocs(collection(db,"proveedores"));
+    const lista = document.getElementById("listaProveedores");
+    lista.innerHTML="";
 
-  querySnapshot.forEach(doc=>{
-    const data=doc.data();
-    lista.innerHTML+=`<div class="item">${data.nombre} - ${data.telefono}</div>`;
-  });
+    const querySnapshot = await getDocs(collection(db,"proveedores"));
+
+    querySnapshot.forEach(doc=>{
+
+      const data = doc.data();
+
+      if(!data.nombre) return;
+
+      lista.innerHTML += `
+        <div class="item">
+          ${data.nombre} - ${data.telefono || ""}
+        </div>
+      `;
+
+    });
+
+  }catch(e){
+    console.log("Error protegido carga proveedores");
+  }
 
 }
 
 /* ---------- NAVEGACION ---------- */
 
-window.ir=function(panel){
+window.ir = function(panel){
 
   document.getElementById("principal").style.display="none";
   document.getElementById("articulos").style.display="none";
@@ -126,7 +178,7 @@ border:none;
 
 input{
 width:100%;
-padding:10px;
+padding:12px;
 margin:5px 0;
 background:#111;
 color:white;
@@ -135,7 +187,7 @@ border:none;
 
 .item{
 background:#111;
-padding:10px;
+padding:12px;
 margin-top:5px;
 }
 
@@ -160,7 +212,7 @@ margin-top:5px;
 
 <h2>Artículos</h2>
 
-<input id="nombreArticulo" placeholder="Nombre">
+<input id="nombreArticulo" placeholder="Nombre artículo">
 <input id="precioArticulo" placeholder="Precio">
 
 <button onclick="guardarArticulo()">Guardar artículo</button>
@@ -186,3 +238,4 @@ margin-top:5px;
 
 </body>
 </html>
+  
