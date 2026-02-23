@@ -6,50 +6,52 @@
 <title>MONOLITO GPT PRO</title>
 
 <style>
-
 body{
-    margin:0;
-    background:#000;
-    color:white;
-    font-family:Arial;
+margin:0;
+background:#000;
+color:white;
+font-family:Arial;
 }
 
 .panel{
-    max-width:400px;
-    margin:auto;
-    padding:20px;
+max-width:400px;
+margin:auto;
+padding:20px;
 }
 
 h1{
-    text-align:center;
+text-align:center;
 }
 
 button{
-    width:100%;
-    padding:15px;
-    margin:5px 0;
-    background:#1a1a1a;
-    color:white;
-    border:none;
-    font-size:18px;
+width:100%;
+padding:15px;
+margin:5px 0;
+background:#1a1a1a;
+color:white;
+border:none;
+font-size:18px;
 }
 
 button.activo{
-    background:#14c9b3;
-    color:black;
+background:#14c9b3;
+color:black;
 }
 
 input{
-    width:100%;
-    padding:12px;
-    margin:5px 0;
-    font-size:16px;
+width:100%;
+padding:12px;
+margin:5px 0;
+font-size:16px;
+background:#111;
+color:white;
+border:none;
 }
 
 .item{
-    background:#111;
-    padding:12px;
-    margin-top:5px;
+background:#111;
+padding:12px;
+margin-top:5px;
 }
 
 </style>
@@ -61,11 +63,9 @@ input{
 
 <h1>MONOLITO GPT PRO</h1>
 
-<button onclick="mostrar('panelPrincipal')">Panel principal</button>
-
 <div id="panelPrincipal">
 
-<button onclick="mostrar('panelArticulos')">Artículos</button>
+<button onclick="mostrarArticulos()">Artículos</button>
 <button>Pedidos</button>
 <button>Proveedores</button>
 <button>Ventas</button>
@@ -94,46 +94,49 @@ input{
 
 let articulos = JSON.parse(localStorage.getItem("articulos")) || [];
 
-function mostrar(id){
-    document.getElementById("panelPrincipal").style.display="none";
-    document.getElementById("panelArticulos").style.display="none";
-    document.getElementById(id).style.display="block";
+function mostrarArticulos(){
+document.getElementById("panelPrincipal").style.display="none";
+document.getElementById("panelArticulos").style.display="block";
+mostrarLista();
 }
 
 function volver(){
-    mostrar("panelPrincipal");
+document.getElementById("panelArticulos").style.display="none";
+document.getElementById("panelPrincipal").style.display="block";
 }
 
 function guardar(){
 
-    let nombre=document.getElementById("nombre").value;
-    let precio=document.getElementById("precio").value;
+let nombre=document.getElementById("nombre").value;
+let precio=document.getElementById("precio").value;
 
-    if(nombre=="") return;
+if(nombre==""){
+alert("Escribe un nombre");
+return;
+}
 
-    articulos.push({
-        nombre:nombre,
-        precio:precio
-    });
+articulos.push({
+nombre:nombre,
+precio:precio
+});
 
-    localStorage.setItem("articulos",JSON.stringify(articulos));
+localStorage.setItem("articulos",JSON.stringify(articulos));
 
-    document.getElementById("nombre").value="";
-    document.getElementById("precio").value="";
+document.getElementById("nombre").value="";
+document.getElementById("precio").value="";
 
-    mostrarLista();
+mostrarLista();
 }
 
 function mostrarLista(){
 
-    let lista=document.getElementById("lista");
+let lista=document.getElementById("lista");
 
-    lista.innerHTML="";
+lista.innerHTML="";
 
-    articulos.forEach(a=>{
-        lista.innerHTML+=
-        "<div class='item'>"+a.nombre+" - "+a.precio+" €</div>";
-    });
+articulos.forEach(a=>{
+lista.innerHTML += "<div class='item'>"+a.nombre+" - "+a.precio+" €</div>";
+});
 
 }
 
@@ -143,4 +146,3 @@ mostrarLista();
 
 </body>
 </html>
- 
