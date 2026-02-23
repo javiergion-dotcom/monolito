@@ -60,10 +60,6 @@ body{
     background:#f0f3f5;
 }
 
-.boton:active{
-    background:#e2e6ea;
-}
-
 #footer{
     background:#ecf0f1;
     padding:10px;
@@ -90,19 +86,19 @@ Operador: Javier • Hora: <span id="hora"></span>
 
 <div class="menu">
 
-<button class="boton" onclick="abrir('libro')">
+<button class="boton" onclick="window.location.href='libro.html'">
 📘 LIBRO
 </button>
 
-<button class="boton" onclick="abrir('proveedores')">
+<button class="boton" onclick="window.location.href='proveedores.html'">
 📦 PROVEEDORES
 </button>
 
-<button class="boton" onclick="abrir('ventas')">
+<button class="boton" onclick="window.location.href='ventas.html'">
 💰 VENTAS
 </button>
 
-<button class="boton" onclick="abrir('documentos')">
+<button class="boton" onclick="window.location.href='documentos.html'">
 📁 DOCUMENTOS
 </button>
 
@@ -118,16 +114,12 @@ Sistema activo • Conectado • Operativo
 
 function actualizarHora(){
     const ahora=new Date();
-    const hora=ahora.toLocaleTimeString();
-    document.getElementById("hora").textContent=hora;
+    document.getElementById("hora").textContent =
+        ahora.toLocaleTimeString();
 }
 
 setInterval(actualizarHora,1000);
 actualizarHora();
-
-function abrir(modulo){
-    alert("Abriendo módulo: " + modulo);
-}
 
 </script>
 
