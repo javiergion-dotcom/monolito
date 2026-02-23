@@ -3,151 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>MONOLITO GPT PRO</title>
 
 <style>
 
 body{
-margin:0;
-background:#0a0a0a;
-font-family:Arial;
-color:white;
+    background:#0b0b0b;
+    color:white;
+    font-family:Arial;
+    margin:0;
+    padding:20px;
 }
 
-.header{
-text-align:center;
-padding:30px;
-font-size:28px;
+h1{
+    text-align:center;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin:5px 0;
+    background:#1f1f1f;
+    color:white;
+    border:none;
+    font-size:18px;
+}
+
+button:hover{
+    background:#00c2a8;
 }
 
 .panel{
-max-width:400px;
-margin:auto;
-}
-
-.btn{
-display:block;
-width:100%;
-padding:15px;
-margin:10px 0;
-background:#111;
-border:1px solid #333;
-color:white;
-font-size:18px;
-cursor:pointer;
-}
-
-.btn:hover{
-background:#00ffcc;
-color:black;
-}
-
-.pantalla{
-display:none;
-padding:20px;
+    display:none;
+    margin-top:20px;
 }
 
 input{
-width:100%;
-padding:12px;
-margin:10px 0;
-background:#111;
-border:1px solid #333;
-color:white;
+    width:100%;
+    padding:10px;
+    margin:5px 0;
+    font-size:16px;
 }
 
-.guardar{
-background:#00ffcc;
-border:none;
-padding:12px;
-cursor:pointer;
-width:100%;
+.lista{
+    margin-top:20px;
+    background:#111;
+    padding:10px;
 }
 
 </style>
 
 </head>
-
 <body>
 
-<div id="inicio">
+<h1>MONOLITO GPT PRO</h1>
 
-<div class="header">
-MONOLITO GPT PRO
-</div>
+<button onclick="abrirArticulos()">Artículos</button>
 
-<div class="panel">
+<div id="panelArticulos" class="panel">
 
-<button class="btn" onclick="abrirArticulos()">
-Artículos
-</button>
-
-<button class="btn">
-Proveedores
-</button>
-
-<button class="btn">
-Pedidos
-</button>
-
-<button class="btn">
-Ventas
-</button>
-
-<button class="btn">
-Diario
-</button>
-
-</div>
-
-</div>
-
-
-<div id="articulos" class="pantalla">
-
-<h2>Artículos</h2>
+<h2>Nuevo artículo</h2>
 
 <input id="nombre" placeholder="Nombre del artículo">
+<input id="precio" placeholder="Precio">
 
-<button class="guardar" onclick="guardarArticulo()">
-Guardar artículo
-</button>
+<button onclick="guardarArticulo()">Guardar artículo</button>
 
-<button class="guardar" onclick="volver()">
-Volver
-</button>
+<div class="lista" id="lista"></div>
 
 </div>
-
 
 <script>
 
+let articulos = JSON.parse(localStorage.getItem("articulos")) || [];
+
 function abrirArticulos(){
 
-document.getElementById("inicio").style.display="none";
-document.getElementById("articulos").style.display="block";
+document.getElementById("panelArticulos").style.display="block";
 
-}
-
-function volver(){
-
-document.getElementById("articulos").style.display="none";
-document.getElementById("inicio").style.display="block";
+mostrar();
 
 }
 
 function guardarArticulo(){
 
 let nombre = document.getElementById("nombre").value;
+let precio = document.getElementById("precio").value;
 
-if(nombre==""){
-alert("Escribe un nombre");
+if(nombre=="" || precio==""){
+alert("Completa los datos");
 return;
 }
 
-alert("Artículo guardado: " + nombre);
+articulos.push({
+nombre:nombre,
+precio:precio
+});
+
+localStorage.setItem("articulos", JSON.stringify(articulos));
 
 document.getElementById("nombre").value="";
+document.getElementById("precio").value="";
+
+mostrar();
+
+}
+
+function mostrar(){
+
+let html="";
+
+for(let a of articulos){
+
+html+=`
+<div>
+${a.nombre} - ${a.precio} €
+</div>
+`;
+
+}
+
+document.getElementById("lista").innerHTML=html;
 
 }
 
