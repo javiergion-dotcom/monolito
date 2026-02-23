@@ -1,71 +1,60 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONOLITO</title>
+<title>LIBRO - MONOLITO</title>
 
 <style>
 
 body{
-    margin:0;
-    font-family:Segoe UI, Arial, sans-serif;
-    background:#f4f6f8;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-#app{
-    width:360px;
-    background:white;
-    border-radius:12px;
-    box-shadow:0 8px 25px rgba(0,0,0,0.15);
-    overflow:hidden;
+margin:0;
+font-family:Segoe UI;
+background:#f4f6f8;
 }
 
 #header{
-    background:#2c3e50;
-    color:white;
-    padding:18px;
-    text-align:center;
-    font-size:24px;
-    font-weight:bold;
+background:#2c3e50;
+color:white;
+padding:18px;
+font-size:22px;
 }
 
-#info{
-    background:#ecf0f1;
-    padding:10px;
-    text-align:center;
-    font-size:14px;
+#contenido{
+padding:20px;
 }
 
-.menu{
-    display:flex;
-    flex-direction:column;
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+font-size:16px;
 }
 
-.boton{
-    padding:18px;
-    font-size:18px;
-    border:none;
-    border-bottom:1px solid #e0e0e0;
-    background:white;
-    cursor:pointer;
-    text-align:left;
+button{
+padding:12px;
+margin-top:10px;
+font-size:16px;
+cursor:pointer;
 }
 
-.boton:hover{
-    background:#f0f3f5;
+#guardar{
+background:#27ae60;
+color:white;
+border:none;
 }
 
-#footer{
-    background:#ecf0f1;
-    padding:10px;
-    text-align:center;
-    font-size:13px;
-    color:#555;
+#volver{
+background:#7f8c8d;
+color:white;
+border:none;
+}
+
+.item{
+background:white;
+padding:10px;
+margin-top:8px;
+border-radius:6px;
 }
 
 </style>
@@ -74,54 +63,112 @@ body{
 
 <body>
 
-<div id="app">
-
 <div id="header">
-MONOLITO
+LIBRO
 </div>
 
-<div id="info">
-Operador: Javier • Hora: <span id="hora"></span>
-</div>
+<div id="contenido">
 
-<div class="menu">
+<input id="nombre" placeholder="Nombre del artículo">
 
-<button class="boton" onclick="window.location.href='libro.html'">
-📘 LIBRO
+<button id="guardar" onclick="guardarArticulo()">
+Guardar artículo
 </button>
 
-<button class="boton" onclick="window.location.href='proveedores.html'">
-📦 PROVEEDORES
+<button id="volver"
+onclick="window.location.href='index.html'">
+Volver
 </button>
 
-<button class="boton" onclick="window.location.href='ventas.html'">
-💰 VENTAS
-</button>
-
-<button class="boton" onclick="window.location.href='documentos.html'">
-📁 DOCUMENTOS
-</button>
+<div id="lista"></div>
 
 </div>
 
-<div id="footer">
-Sistema activo • Conectado • Operativo
-</div>
+<script type="module">
 
-</div>
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-<script>
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-function actualizarHora(){
-    const ahora=new Date();
-    document.getElementById("hora").textContent =
-        ahora.toLocaleTimeString();
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+
+authDomain: "monolito-ed87d.firebaseapp.com",
+
+projectId: "monolito-ed87d",
+
+storageBucket: "monolito-ed87d.appspot.com",
+
+messagingSenderId: "737849584362",
+
+appId: "1:737849584362:web:3d1821bedcd64080cf8593"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+window.guardarArticulo = async function(){
+
+const nombre =
+document.getElementById("nombre").value;
+
+if(!nombre) return;
+
+await addDoc(
+collection(db,"articulos"),
+{ nombre: nombre }
+);
+
+document.getElementById("nombre").value="";
+
+cargarArticulos();
+
 }
 
-setInterval(actualizarHora,1000);
-actualizarHora();
+
+async function cargarArticulos(){
+
+const lista =
+document.getElementById("lista");
+
+lista.innerHTML="";
+
+const querySnapshot =
+await getDocs(collection(db,"articulos"));
+
+querySnapshot.forEach(doc => {
+
+const div =
+document.createElement("div");
+
+div.className="item";
+
+div.textContent =
+doc.data().nombre;
+
+lista.appendChild(div);
+
+});
+
+}
+
+
+cargarArticulos();
 
 </script>
 
 </body>
-</html>
+</html>   
