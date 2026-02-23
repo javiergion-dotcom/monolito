@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,22 +6,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MONOLITO GPT PRO</title>
 
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+  authDomain: "monolito-ed87d.firebaseapp.com",
+  projectId: "monolito-ed87d",
+  storageBucket: "monolito-ed87d.firebasestorage.app",
+  messagingSenderId: "737849584362",
+  appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593",
+  measurementId: "G-V8KHB086M3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.guardarArticulo = async function(){
+
+  const nombre = document.getElementById("nombre").value;
+  const precio = document.getElementById("precio").value;
+
+  if(!nombre || !precio){
+    alert("Completa los datos");
+    return;
+  }
+
+  await addDoc(collection(db, "articulos"), {
+    nombre: nombre,
+    precio: precio
+  });
+
+  document.getElementById("nombre").value="";
+  document.getElementById("precio").value="";
+
+  cargarArticulos();
+
+}
+
+window.cargarArticulos = async function(){
+
+  const lista = document.getElementById("lista");
+  lista.innerHTML="";
+
+  const querySnapshot = await getDocs(collection(db, "articulos"));
+
+  querySnapshot.forEach((doc) => {
+
+    const data = doc.data();
+
+    lista.innerHTML += `
+      <div class="item">
+        ${data.nombre} - ${data.precio} €
+      </div>
+    `;
+
+  });
+
+}
+
+window.mostrarArticulos = function(){
+  document.getElementById("principal").style.display="none";
+  document.getElementById("articulosPanel").style.display="block";
+  cargarArticulos();
+}
+
+window.volver = function(){
+  document.getElementById("principal").style.display="block";
+  document.getElementById("articulosPanel").style.display="none";
+}
+
+</script>
+
 <style>
+
 body{
-margin:0;
 background:#000;
 color:white;
 font-family:Arial;
-}
-
-.panel{
-max-width:400px;
-margin:auto;
+margin:0;
 padding:20px;
-}
-
-h1{
-text-align:center;
 }
 
 button{
@@ -33,16 +105,10 @@ border:none;
 font-size:18px;
 }
 
-button.activo{
-background:#14c9b3;
-color:black;
-}
-
 input{
 width:100%;
 padding:12px;
 margin:5px 0;
-font-size:16px;
 background:#111;
 color:white;
 border:none;
@@ -55,94 +121,39 @@ margin-top:5px;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="panel">
+<div id="principal">
 
 <h1>MONOLITO GPT PRO</h1>
 
-<div id="panelPrincipal">
-
-<button onclick="mostrarArticulos()">Artículos</button>
-<button>Pedidos</button>
-<button>Proveedores</button>
-<button>Ventas</button>
-<button>Diario</button>
+<button onclick="mostrarArticulos()">
+Artículos
+</button>
 
 </div>
 
-<div id="panelArticulos" style="display:none">
+<div id="articulosPanel" style="display:none">
 
-<button onclick="volver()">← Volver</button>
+<button onclick="volver()">
+← Volver
+</button>
 
 <h2>Nuevo artículo</h2>
 
-<input id="nombre" placeholder="Nombre del artículo">
+<input id="nombre" placeholder="Nombre">
 <input id="precio" placeholder="Precio">
 
-<button class="activo" onclick="guardar()">Guardar artículo</button>
+<button onclick="guardarArticulo()">
+Guardar artículo
+</button>
 
 <div id="lista"></div>
 
 </div>
-
-</div>
-
-<script>
-
-let articulos = JSON.parse(localStorage.getItem("articulos")) || [];
-
-function mostrarArticulos(){
-document.getElementById("panelPrincipal").style.display="none";
-document.getElementById("panelArticulos").style.display="block";
-mostrarLista();
-}
-
-function volver(){
-document.getElementById("panelArticulos").style.display="none";
-document.getElementById("panelPrincipal").style.display="block";
-}
-
-function guardar(){
-
-let nombre=document.getElementById("nombre").value;
-let precio=document.getElementById("precio").value;
-
-if(nombre==""){
-alert("Escribe un nombre");
-return;
-}
-
-articulos.push({
-nombre:nombre,
-precio:precio
-});
-
-localStorage.setItem("articulos",JSON.stringify(articulos));
-
-document.getElementById("nombre").value="";
-document.getElementById("precio").value="";
-
-mostrarLista();
-}
-
-function mostrarLista(){
-
-let lista=document.getElementById("lista");
-
-lista.innerHTML="";
-
-articulos.forEach(a=>{
-lista.innerHTML += "<div class='item'>"+a.nombre+" - "+a.precio+" €</div>";
-});
-
-}
-
-mostrarLista();
-
-</script>
 
 </body>
 </html>
