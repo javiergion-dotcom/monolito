@@ -2,118 +2,144 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>LIBRO - MONOLITO</title>
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
-  authDomain: "monolito-ed87d.firebaseapp.com",
-  projectId: "monolito-ed87d",
-  storageBucket: "monolito-ed87d.firebasestorage.app",
-  messagingSenderId: "737849584362",
-  appId: "1:737849584362:web:3d1821bedcd64080cf8593"
-};
-
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-
-window.guardarArticulo = async function() {
-
-  const nombre = document.getElementById("nombre").value;
-
-  if(!nombre) return;
-
-  await addDoc(collection(db, "articulos"), {
-    nombre: nombre,
-    fecha: new Date()
-  });
-
-  document.getElementById("nombre").value = "";
-
-};
-
-
-// Mostrar artículos en tiempo real
-
-onSnapshot(collection(db, "articulos"), (snapshot) => {
-
-  const lista = document.getElementById("lista");
-
-  lista.innerHTML = "";
-
-  snapshot.forEach(doc => {
-
-    const div = document.createElement("div");
-
-    div.textContent = doc.data().nombre;
-
-    div.style.padding = "8px";
-    div.style.background = "#ecf0f1";
-    div.style.marginTop = "5px";
-
-    lista.appendChild(div);
-
-  });
-
-});
-
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONOLITO GPT PRO</title>
 
 <style>
 
-body {
-  font-family: Segoe UI;
-  padding: 20px;
-  background: #f4f6f8;
+body{
+    margin:0;
+    background: linear-gradient(180deg,#1a1a1a,#2b2b2b);
+    font-family: Arial, Helvetica, sans-serif;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
 }
 
-input {
-  font-size: 18px;
-  padding: 10px;
-  width: 100%;
+.panel{
+    width:340px;
+    background:#111;
+    border-radius:12px;
+    box-shadow:0 0 25px rgba(0,0,0,0.6);
+    overflow:hidden;
 }
 
-button {
-  font-size: 18px;
-  padding: 10px;
-  margin-top: 10px;
+.header{
+    background:linear-gradient(180deg,#2a2a2a,#111);
+    padding:18px;
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+    letter-spacing:2px;
+}
+
+.subheader{
+    text-align:center;
+    padding:8px;
+    font-size:14px;
+    color:#aaa;
+    border-bottom:1px solid #333;
+}
+
+.boton{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px;
+    border-bottom:1px solid #222;
+    background:linear-gradient(180deg,#2b2b2b,#1c1c1c);
+    cursor:pointer;
+    transition:0.2s;
+    font-size:18px;
+}
+
+.boton:hover{
+    background:linear-gradient(180deg,#3a3a3a,#222);
+}
+
+.icono{
+    font-size:22px;
+}
+
+.footer{
+    padding:10px;
+    text-align:center;
+    font-size:12px;
+    color:#777;
+}
+
+.nuevo{
+    background:linear-gradient(180deg,#b00000,#600000);
+    justify-content:center;
+    font-weight:bold;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<h2>LIBRO</h2>
+<div class="panel">
 
-<input id="nombre" placeholder="Nombre artículo">
+<div class="header">
+MONOLITO GPT PRO
+</div>
 
-<button onclick="guardarArticulo()">
-Guardar
-</button>
+<div class="subheader">
+Sistema GION • Operador: Javier • <span id="hora"></span>
+</div>
 
-<br><br>
+<div class="boton" onclick="abrir('pedidos.html')">
+<span class="icono">🧾</span> PEDIDOS
+</div>
 
-<button onclick="window.location.href='index.html'">
-Volver
-</button>
+<div class="boton" onclick="abrir('proveedores.html')">
+<span class="icono">📦</span> PROVEEDORES
+</div>
 
-<h3>Artículos:</h3>
+<div class="boton" onclick="abrir('articulos.html')">
+<span class="icono">🍺</span> ARTÍCULOS
+</div>
 
-<div id="lista"></div>
+<div class="boton" onclick="abrir('ventas.html')">
+<span class="icono">📊</span> VENTAS
+</div>
+
+<div class="boton" onclick="abrir('diario.html')">
+<span class="icono">📓</span> DIARIO DEL BAR
+</div>
+
+<div class="boton nuevo" onclick="abrir('nuevo_pedido.html')">
+NUEVO PEDIDO
+</div>
+
+<div class="footer">
+Sistema activo • Sincronizado • Autoguardado activo
+</div>
+
+</div>
+
+<script>
+
+function abrir(pagina){
+    window.location.href = pagina;
+}
+
+function actualizarHora(){
+    const ahora = new Date();
+    const hora =
+        String(ahora.getHours()).padStart(2,'0') + ":" +
+        String(ahora.getMinutes()).padStart(2,'0');
+
+    document.getElementById("hora").innerText = hora;
+}
+
+actualizarHora();
+setInterval(actualizarHora,1000);
+
+</script>
 
 </body>
 </html>
