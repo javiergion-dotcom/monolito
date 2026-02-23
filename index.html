@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>MONOLITO GPT-Pro</title>
 
 <style>
 
 body{
     margin:0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
     background:#e9e1d3;
     display:flex;
     justify-content:center;
@@ -18,11 +17,11 @@ body{
     height:100vh;
 }
 
-#contenedor{
+#panel{
     width:340px;
     background:#f3eadb;
-    border-radius:14px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
     overflow:hidden;
 }
 
@@ -30,51 +29,61 @@ body{
     background:#a3472a;
     color:white;
     text-align:center;
-    font-size:32px;
+    font-size:30px;
     font-weight:bold;
     padding:16px;
 }
 
 #info{
-    text-align:center;
     background:#e6dccb;
+    text-align:center;
     padding:10px;
-    font-size:16px;
 }
 
-.boton{
-    display:flex;
-    align-items:center;
-    gap:12px;
+.modulo{
+    position:relative;
+    padding:18px 20px;
     font-size:20px;
     font-weight:bold;
-    padding:18px;
     cursor:pointer;
-    background-size:cover;
-    background-repeat:no-repeat;
 }
 
-#libro{
-    background-image:url("https://i.imgur.com/8QZ7Z9A.png");
+.pincel{
+    position:absolute;
+    left:10px;
+    right:10px;
+    top:6px;
+    bottom:6px;
+    border-radius:12px;
+    opacity:0.6;
+    z-index:0;
 }
 
-#proveedores{
-    background-image:url("https://i.imgur.com/2vQZ4YB.png");
+.texto{
+    position:relative;
+    z-index:1;
 }
 
-#ventas{
-    background-image:url("https://i.imgur.com/JXgF6ZV.png");
+.libro .pincel{
+    background:#9fb6bb;
 }
 
-#documentos{
-    background-image:url("https://i.imgur.com/6XKQX8y.png");
+.proveedores .pincel{
+    background:#c9b2a1;
+}
+
+.ventas .pincel{
+    background:#d2c29f;
+}
+
+.documentos .pincel{
+    background:#bcbcbc;
 }
 
 #estado{
+    background:#e6dccb;
     text-align:center;
     padding:10px;
-    background:#e6dccb;
-    font-size:14px;
 }
 
 </style>
@@ -83,26 +92,55 @@ body{
 
 <body>
 
-<div id="contenedor">
+<div id="panel">
 
-<div id="titulo">
-MONOLITO
-</div>
+<div id="titulo">MONOLITO</div>
 
 <div id="info">
 Operador: Javier • Hora: <span id="hora"></span>
 </div>
 
-<div class="boton" id="libro" onclick="abrirModulo('libro')">
-📘 LIBRO
+<div class="modulo libro" onclick="abrir('LIBRO')">
+<div class="pincel"></div>
+<div class="texto">📘 LIBRO</div>
 </div>
 
-<div class="boton" id="proveedores" onclick="abrirModulo('proveedores')">
-📦 PROVEEDORES
+<div class="modulo proveedores" onclick="abrir('PROVEEDORES')">
+<div class="pincel"></div>
+<div class="texto">📦 PROVEEDORES</div>
 </div>
 
-<div class="boton" id="ventas" onclick="abrirModulo('ventas')">
-💰 VENTAS
+<div class="modulo ventas" onclick="abrir('VENTAS')">
+<div class="pincel"></div>
+<div class="texto">💰 VENTAS</div>
 </div>
 
-<div class="boton" id="documentos
+<div class="modulo documentos" onclick="abrir('DOCUMENTOS')">
+<div class="pincel"></div>
+<div class="texto">📁 DOCUMENTOS</div>
+</div>
+
+<div id="estado">
+● Sistema activo ● Sincronizado ● Autoguardado activo
+</div>
+
+</div>
+
+<script>
+
+function abrir(nombre){
+    alert("Módulo "+nombre+" activado");
+}
+
+function actualizarHora(){
+    document.getElementById("hora").textContent =
+        new Date().toLocaleTimeString();
+}
+
+setInterval(actualizarHora,1000);
+actualizarHora();
+
+</script>
+
+</body>
+</html>
