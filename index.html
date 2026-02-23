@@ -1,46 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
+
+<!DOCTYPE html><html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONOLITO GPT PRO</title>
-
-<style>
-body{
-margin:0;
-background:#000;
-color:#fff;
-font-family:Arial;
-padding:20px;
-}
-
-button{
-width:100%;
-padding:20px;
-margin:10px 0;
-background:#111;
-color:#fff;
-border:1px solid #333;
-font-size:18px;
-}
-
-input{
-width:100%;
-padding:15px;
-margin:5px 0;
-background:#111;
-color:#fff;
-border:1px solid #333;
-}
-
-.item{
-background:#111;
-padding:15px;
-margin-top:5px;
-}
-</style>
-
-<script type="module">
+<title>MONOLITO GPT PRO</title><script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -62,7 +25,95 @@ appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.ir = function(panel){
+/* ---------- ARTICULOS ---------- */
+
+window.guardarArticulo = async function(){
+
+const nombre = document.getElementById("nombreArticulo").value.trim();
+const precio = document.getElementById("precioArticulo").value.trim();
+
+if(nombre=="" || precio=="") return;
+
+await addDoc(collection(db,"articulos"),{
+nombre,
+precio,
+fecha:new Date().toISOString()
+});
+
+document.getElementById("nombreArticulo").value="";
+document.getElementById("precioArticulo").value="";
+
+cargarArticulos();
+
+}
+
+window.cargarArticulos = async function(){
+
+const lista=document.getElementById("listaArticulos");
+lista.innerHTML="";
+
+const querySnapshot=await getDocs(collection(db,"articulos"));
+
+querySnapshot.forEach(doc=>{
+
+const data=doc.data();
+
+lista.innerHTML+=`
+<div class="item">
+🍺 ${data.nombre} — ${data.precio} €
+</div>
+`;
+
+});
+
+}
+
+/* ---------- PROVEEDORES ---------- */
+
+window.guardarProveedor = async function(){
+
+const nombre=document.getElementById("nombreProveedor").value.trim();
+const telefono=document.getElementById("telefonoProveedor").value.trim();
+
+if(nombre=="") return;
+
+await addDoc(collection(db,"proveedores"),{
+nombre,
+telefono,
+fecha:new Date().toISOString()
+});
+
+document.getElementById("nombreProveedor").value="";
+document.getElementById("telefonoProveedor").value="";
+
+cargarProveedores();
+
+}
+
+window.cargarProveedores = async function(){
+
+const lista=document.getElementById("listaProveedores");
+lista.innerHTML="";
+
+const querySnapshot=await getDocs(collection(db,"proveedores"));
+
+querySnapshot.forEach(doc=>{
+
+const data=doc.data();
+
+lista.innerHTML+=`
+<div class="item">
+📦 ${data.nombre} — ${data.telefono || ""}
+</div>
+`;
+
+});
+
+}
+
+/* ---------- NAVEGACION ---------- */
+
+window.ir=function(panel){
 
 document.getElementById("principal").style.display="none";
 document.getElementById("articulos").style.display="none";
@@ -72,97 +123,77 @@ document.getElementById(panel).style.display="block";
 
 if(panel=="articulos") cargarArticulos();
 if(panel=="proveedores") cargarProveedores();
+
 }
 
-window.guardarArticulo = async function(){
+</script><style>
 
-const nombre = document.getElementById("nombreArticulo").value.trim();
-if(nombre=="") return;
-
-await addDoc(collection(db,"articulos"),{nombre});
-
-document.getElementById("nombreArticulo").value="";
-cargarArticulos();
+body{
+margin:0;
+background:linear-gradient(180deg,#1a1a1a,#000);
+color:white;
+font-family:Arial;
 }
 
-window.cargarArticulos = async function(){
-
-const lista = document.getElementById("listaArticulos");
-lista.innerHTML="";
-
-const querySnapshot = await getDocs(collection(db,"articulos"));
-
-querySnapshot.forEach(doc=>{
-lista.innerHTML += `<div class="item">${doc.data().nombre}</div>`;
-});
+.header{
+text-align:center;
+padding:25px;
+font-size:28px;
+font-weight:bold;
+letter-spacing:2px;
+background:linear-gradient(180deg,#2a2a2a,#000);
+box-shadow:0 4px 20px rgba(0,0,0,0.8);
 }
 
-window.guardarProveedor = async function(){
-
-const nombre = document.getElementById("nombreProveedor").value.trim();
-if(nombre=="") return;
-
-await addDoc(collection(db,"proveedores"),{nombre});
-
-document.getElementById("nombreProveedor").value="";
-cargarProveedores();
+.container{
+max-width:600px;
+margin:auto;
+padding:20px;
 }
 
-window.cargarProveedores = async function(){
-
-const lista = document.getElementById("listaProveedores");
-lista.innerHTML="";
-
-const querySnapshot = await getDocs(collection(db,"proveedores"));
-
-querySnapshot.forEach(doc=>{
-lista.innerHTML += `<div class="item">${doc.data().nombre}</div>`;
-});
+.boton{
+background:linear-gradient(180deg,#3a3a3a,#111);
+padding:18px;
+margin:10px 0;
+border-radius:8px;
+box-shadow:
+0 4px 10px rgba(0,0,0,0.8),
+inset 0 1px 0 rgba(255,255,255,0.1);
+font-size:18px;
+cursor:pointer;
 }
 
-</script>
+.boton:active{
+transform:scale(0.98);
+}
 
-</head>
+input{
+width:100%;
+padding:14px;
+margin:6px 0;
+background:#111;
+border:none;
+color:white;
+border-radius:6px;
+}
 
-<body>
+.item{
+background:linear-gradient(180deg,#222,#000);
+padding:14px;
+margin-top:6px;
+border-radius:6px;
+box-shadow:0 2px 6px black;
+}
 
-<div id="principal">
+.volver{
+background:linear-gradient(180deg,#444,#111);
+padding:12px;
+margin-bottom:15px;
+border-radius:6px;
+cursor:pointer;
+}
 
-<h1>MONOLITO GPT PRO</h1>
-
-<button onclick="ir('articulos')">ARTÍCULOS</button>
-
-<button onclick="ir('proveedores')">PROVEEDORES</button>
-
-</div>
-
-<div id="articulos" style="display:none">
-
-<button onclick="ir('principal')">← VOLVER</button>
-
-<h2>ARTÍCULOS</h2>
-
-<input id="nombreArticulo" placeholder="Nombre artículo">
-
-<button onclick="guardarArticulo()">Guardar artículo</button>
-
-<div id="listaArticulos"></div>
-
-</div>
-
-<div id="proveedores" style="display:none">
-
-<button onclick="ir('principal')">← VOLVER</button>
-
-<h2>PROVEEDORES</h2>
-
-<input id="nombreProveedor" placeholder="Nombre proveedor">
-
-<button onclick="guardarProveedor()">Guardar proveedor</button>
-
-<div id="listaProveedores"></div>
-
-</div>
-
-</body>
+</style></head><body><div class="header">
+MONOLITO GPT PRO
+</div><div class="container"><div id="principal"><div class="boton" onclick="ir('articulos')">🍺 ARTÍCULOS</div><div class="boton" onclick="ir('proveedores')">📦 PROVEEDORES</div><div class="boton">🧾 PEDIDOS</div><div class="boton">📊 VENTAS</div><div class="boton">📘 DIARIO DEL BAR</div></div><div id="articulos" style="display:none"><div class="volver" onclick="ir('principal')">← Volver</div><input id="nombreArticulo" placeholder="Nombre artículo"><input id="precioArticulo" placeholder="Precio"><div class="boton" onclick="guardarArticulo()">Guardar artículo</div><div id="listaArticulos"></div></div><div id="proveedores" style="display:none"><div class="volver" onclick="ir('principal')">← Volver</div><input id="nombreProveedor" placeholder="Nombre proveedor"><input id="telefonoProveedor" placeholder="Teléfono"><div class="boton" onclick="guardarProveedor()">Guardar proveedor</div><div id="listaProveedores"></div></div></div></body>
 </html>
