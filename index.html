@@ -8,6 +8,7 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import {
 getFirestore,
 collection,
@@ -16,16 +17,19 @@ getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
+
 apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
 authDomain: "monolito-ed87d.firebaseapp.com",
 projectId: "monolito-ed87d",
 storageBucket: "monolito-ed87d.firebasestorage.app",
 messagingSenderId: "737849584362",
 appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
+
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 
 /* CAMAREROS */
 
@@ -37,13 +41,18 @@ const camareros = {
 };
 
 window.buscarCamarero = function(){
+
 const codigo = document.getElementById("codigoCamarero").value.trim();
-document.getElementById("nombreCamarero").value = camareros[codigo] || "";
+
+document.getElementById("nombreCamarero").value =
+camareros[codigo] || "";
+
 }
 
-/* FECHA Y HORA */
 
-window.actualizarFechaHora = function(){
+/* FECHA HORA */
+
+window.fechaActual = function(){
 
 const ahora = new Date();
 
@@ -55,21 +64,25 @@ ahora.toLocaleTimeString();
 
 }
 
+
 /* CARGAR PROVEEDORES */
 
-window.cargarListaProveedores = async function(){
+window.cargarProveedores = async function(){
 
-const select = document.getElementById("proveedorPedido");
+const select =
+document.getElementById("proveedor");
 
 select.innerHTML="";
 
-const snap = await getDocs(collection(db,"proveedores"));
+const snap =
+await getDocs(collection(db,"proveedores"));
 
 snap.forEach(doc=>{
 
-const data=doc.data();
+const data = doc.data();
 
-const option=document.createElement("option");
+const option =
+document.createElement("option");
 
 option.value=data.nombre;
 option.textContent=data.nombre;
@@ -80,105 +93,117 @@ select.appendChild(option);
 
 }
 
-/* CREAR TABLA PEDIDO */
 
-window.crearTabla = function(){
+/* ESTADO PEDIDO */
 
-const tabla=document.getElementById("tablaPedido");
+let estadoPagado=false;
+let estadoIncidencia=false;
 
-tabla.innerHTML="";
 
-for(let i=0;i<25;i++){
+window.togglePagado=function(){
 
-tabla.innerHTML+=`
-<tr>
+estadoPagado=!estadoPagado;
 
-<td>
-<input type="number" class="pido" oninput="calcularFila(this)">
-</td>
+const btn =
+document.getElementById("btnPagado");
 
-<td>
-<input type="text">
-</td>
+if(estadoPagado){
 
-<td>
-<input type="number" class="precio" oninput="calcularFila(this)">
-</td>
+btn.classList.add("verde");
 
-<td>
-<input type="number" class="iva" value="10" oninput="calcularFila(this)">
-</td>
+guardarHistorico();
 
-<td>
-<input type="number" class="total" readonly>
-</td>
+}else{
 
-</tr>
-`;
+btn.classList.remove("verde");
 
 }
 
 }
 
-/* CALCULAR FILA */
 
-window.calcularFila=function(input){
+window.toggleIncidencia=function(){
 
-const fila=input.parentElement.parentElement;
+estadoIncidencia=!estadoIncidencia;
 
-const pido=fila.querySelector(".pido").value||0;
-const precio=fila.querySelector(".precio").value||0;
-const iva=fila.querySelector(".iva").value||0;
+const btn =
+document.getElementById("btnIncidencia");
 
-const total=(pido*precio)*(1+(iva/100));
+const panel =
+document.getElementById("panelIncidencia");
 
-fila.querySelector(".total").value=total.toFixed(2);
+if(estadoIncidencia){
 
-calcularTotales();
+btn.classList.add("rojo");
+
+panel.style.display="block";
+
+}else{
+
+btn.classList.remove("rojo");
+
+panel.style.display="none";
+
+}
 
 }
 
-/* CALCULAR TOTALES */
 
-window.calcularTotales=function(){
+/* GUARDAR HISTORICO */
 
-let subtotal=0;
-let ivaTotal=0;
+window.guardarHistorico = async function(){
 
-document.querySelectorAll("#tablaPedido tr").forEach(fila=>{
+const pedido={
 
-const pido=fila.querySelector(".pido").value||0;
-const precio=fila.querySelector(".precio").value||0;
-const iva=fila.querySelector(".iva").value||0;
+fecha:
+document.getElementById("fecha").value,
 
-const base=pido*precio;
-const ivaCalc=base*(iva/100);
+hora:
+document.getElementById("hora").value,
 
-subtotal+=base;
-ivaTotal+=ivaCalc;
+camarero:
+document.getElementById("nombreCamarero").value,
 
-});
+proveedor:
+document.getElementById("proveedor").value,
 
-document.getElementById("subtotal").value=subtotal.toFixed(2);
-document.getElementById("ivatotal").value=ivaTotal.toFixed(2);
-document.getElementById("totalfinal").value=(subtotal+ivaTotal).toFixed(2);
+pagado:estadoPagado,
+
+incidencia:estadoIncidencia,
+
+textoIncidencia:
+document.getElementById("textoIncidencia").value,
+
+acuerdo:
+document.getElementById("acuerdo").value,
+
+firma:
+document.getElementById("firma").value,
+
+timestamp:new Date().toISOString()
+
+};
+
+await addDoc(collection(db,"historico"),pedido);
+
+alert("Pedido guardado en histórico");
 
 }
+
 
 /* NAVEGACION */
 
 window.ir=function(panel){
 
 document.getElementById("principal").style.display="none";
-document.getElementById("pedidos").style.display="none";
+document.getElementById("pedido").style.display="none";
 
 document.getElementById(panel).style.display="block";
 
-if(panel=="pedidos"){
+if(panel=="pedido"){
 
-actualizarFechaHora();
-cargarListaProveedores();
-crearTabla();
+fechaActual();
+cargarProveedores();
 
 }
 
@@ -186,38 +211,78 @@ crearTabla();
 
 </script>
 
+
 <style>
 
 body{
+
 background:black;
 color:white;
 font-family:Arial;
 padding:20px;
+
 }
 
+
 button{
+
 width:100%;
 padding:15px;
 margin:5px 0;
-background:#1a1a1a;
+background:#222;
 color:white;
-border:1px solid #444;
+border:1px solid #555;
+font-size:18px;
+
 }
 
-input,select{
+
+.estado{
+
+width:48%;
+display:inline-block;
+padding:20px;
+text-align:center;
+border:2px solid white;
+margin:5px;
+font-weight:bold;
+
+}
+
+
+.verde{
+
+background:green;
+
+}
+
+
+.rojo{
+
+background:red;
+
+}
+
+
+textarea{
+
+width:100%;
+height:80px;
 background:#111;
 color:white;
 border:1px solid #333;
-padding:5px;
+
 }
 
-table{
+
+input,select{
+
 width:100%;
-border-collapse:collapse;
-}
-
-td{
+padding:10px;
+background:#111;
+color:white;
 border:1px solid #333;
+
 }
 
 </style>
@@ -226,19 +291,24 @@ border:1px solid #333;
 
 <body>
 
+
 <div id="principal">
 
 <h1>MONOLITO GPT PRO</h1>
 
-<button onclick="ir('pedidos')">PEDIDOS</button>
+<button onclick="ir('pedido')">
+NUEVO PEDIDO
+</button>
 
 </div>
 
-<div id="pedidos" style="display:none">
 
-<button onclick="ir('principal')">← VOLVER</button>
+<div id="pedido" style="display:none">
 
-<h2>HOJA DE PEDIDO</h2>
+<button onclick="ir('principal')">
+← VOLVER
+</button>
+
 
 Fecha
 <input id="fecha" readonly>
@@ -246,43 +316,69 @@ Fecha
 Hora
 <input id="hora" readonly>
 
+
 Código camarero
-<input id="codigoCamarero" oninput="buscarCamarero()">
+<input id="codigoCamarero"
+oninput="buscarCamarero()">
+
 
 Nombre camarero
 <input id="nombreCamarero" readonly>
 
+
 Proveedor
-<select id="proveedorPedido"></select>
+<select id="proveedor"></select>
+
 
 <br><br>
 
-<table>
 
-<tr>
-<td>Pido</td>
-<td>Artículo</td>
-<td>Precio</td>
-<td>IVA %</td>
-<td>Total</td>
-</tr>
+<div>
 
-<tbody id="tablaPedido"></tbody>
+<div id="btnPagado"
+class="estado"
+onclick="togglePagado()">
 
-</table>
-
-<br>
-
-Subtotal
-<input id="subtotal" readonly>
-
-IVA
-<input id="ivatotal" readonly>
-
-TOTAL
-<input id="totalfinal" readonly>
+PAGADO
 
 </div>
+
+
+<div id="btnIncidencia"
+class="estado"
+onclick="toggleIncidencia()">
+
+INCIDENCIA
+
+</div>
+
+</div>
+
+
+<div id="panelIncidencia"
+style="display:none;">
+
+
+Incidencia
+
+<textarea id="textoIncidencia"></textarea>
+
+
+Acuerdo
+
+<textarea id="acuerdo"></textarea>
+
+
+Firma proveedor
+
+<input id="firma">
+
+
+</div>
+
+
+</div>
+
 
 </body>
 </html>
