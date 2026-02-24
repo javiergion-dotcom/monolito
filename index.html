@@ -44,8 +44,8 @@ font-size:26px;
 color:#ff0000;
 }
 
-select{
-font-size:22px;
+select,input{
+font-size:20px;
 padding:5px;
 background:#111;
 color:white;
@@ -68,19 +68,10 @@ td{
 padding:6px;
 }
 
-input{
-background:#111;
-color:white;
-border:1px solid #555;
-font-size:20px;
-padding:5px;
-}
-
 .cantidad{width:80px;}
 .articulo{width:400px;}
 .precio{width:120px;}
 .iva{width:80px;}
-.total{width:120px;}
 
 .panel{
 margin-top:10px;
@@ -103,8 +94,8 @@ font-size:26px;
 
 <script type="module">
 
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getFirestore,
@@ -113,10 +104,9 @@ getDocs,
 query,
 where
 }
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
+const firebaseConfig={
 apiKey:"AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
 authDomain:"monolito-ed87d.firebaseapp.com",
 projectId:"monolito-ed87d",
@@ -125,8 +115,8 @@ messagingSenderId:"737849584362",
 appId:"1:737849584362:web:bdb3b3b9fd65425dcf8593"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
 
 let articulosProveedor=[];
 
@@ -135,7 +125,7 @@ window.onload=async function(){
 await cargarProveedores();
 crearFilas();
 
-}
+};
 
 async function cargarProveedores(){
 
@@ -144,7 +134,8 @@ const select=document.getElementById("proveedor");
 const snap=await getDocs(collection(db,"proveedores"));
 
 snap.forEach(doc=>{
-select.innerHTML+=`<option>${doc.data().nombre}</option>`;
+select.innerHTML+=
+`<option>${doc.data().nombre}</option>`;
 });
 
 }
@@ -153,18 +144,31 @@ window.cambiarProveedor=async function(){
 
 const proveedor=document.getElementById("proveedor").value;
 
-const q=query(collection(db,"articulos"),
-where("proveedor","==",proveedor));
+const lista=document.getElementById("listaArticulos");
+
+lista.innerHTML="";
+
+const q=query(
+collection(db,"articulos"),
+where("proveedor","==",proveedor)
+);
 
 const snap=await getDocs(q);
 
 articulosProveedor=[];
 
 snap.forEach(doc=>{
-articulosProveedor.push(doc.data());
+
+const data=doc.data();
+
+articulosProveedor.push(data);
+
+lista.innerHTML+=
+`<option value="${data.nombre}">`;
+
 });
 
-}
+};
 
 function crearFilas(){
 
@@ -183,7 +187,8 @@ tabla.innerHTML+=`
 </td>
 
 <td>
-<input class="articulo" list="listaArticulos"
+<input class="articulo"
+list="listaArticulos"
 onchange="rellenarArticulo(this)">
 </td>
 
@@ -214,7 +219,8 @@ const fila=input.parentNode.parentNode;
 const precioInput=fila.querySelector(".precio");
 const ivaInput=fila.querySelector(".iva");
 
-const articulo=articulosProveedor.find(a=>a.nombre==nombre);
+const articulo=
+articulosProveedor.find(a=>a.nombre==nombre);
 
 if(articulo){
 
@@ -225,7 +231,7 @@ ivaInput.value=articulo.iva;
 
 calcular();
 
-}
+};
 
 window.calcular=function(){
 
@@ -242,19 +248,24 @@ const iva=fila.querySelector(".iva").value||0;
 
 const total=cantidad*precio;
 
-fila.querySelector(".total").innerText=total.toFixed(2);
+fila.querySelector(".total").innerText=
+total.toFixed(2);
 
 subtotal+=total;
 ivaTotal+=total*(iva/100);
 
 });
 
-document.getElementById("subtotal").innerText=subtotal.toFixed(2);
-document.getElementById("ivatotal").innerText=ivaTotal.toFixed(2);
+document.getElementById("subtotal").innerText=
+subtotal.toFixed(2);
+
+document.getElementById("ivatotal").innerText=
+ivaTotal.toFixed(2);
+
 document.getElementById("totalfinal").innerText=
 (subtotal+ivaTotal).toFixed(2);
 
-}
+};
 
 </script>
 
@@ -276,18 +287,19 @@ document.getElementById("totalfinal").innerText=
 
 Proveedor:
 
-<select id="proveedor" onchange="cambiarProveedor()">
+<select id="proveedor"
+onchange="cambiarProveedor()">
 <option></option>
 </select>
 
 </div>
 
-<datalist id="listaArticulos">
-</datalist>
+<datalist id="listaArticulos"></datalist>
 
 <table>
 
 <thead>
+
 <tr>
 <th>Pido</th>
 <th>Artículo</th>
@@ -295,10 +307,10 @@ Proveedor:
 <th>IVA</th>
 <th>Total</th>
 </tr>
+
 </thead>
 
-<tbody id="tabla">
-</tbody>
+<tbody id="tabla"></tbody>
 
 </table>
 
