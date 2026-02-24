@@ -14,34 +14,43 @@ font-family:Arial;
 padding:10px;
 }
 
-button{
-width:100%;
-padding:18px;
-margin:10px 0;
-background:#222;
-color:white;
-border:2px solid #555;
-font-size:20px;
-}
+/* BARRA SUPERIOR */
 
-input{
+.barraSuperior{
+display:flex;
+align-items:center;
+gap:60px;
 background:#111;
-color:white;
-border:1px solid #555;
-padding:8px;
-font-size:18px;
+padding:20px;
 }
 
-.checkgrande{
-width:40px;
-height:40px;
-margin-right:10px;
+/* PAGADO VERDE */
+
+.checkPagado{
+width:45px;
+height:45px;
+accent-color:#00ff00;
 }
 
-.checklabel{
-font-size:22px;
-margin-right:30px;
+.labelPagado{
+font-size:26px;
+color:#00ff00;
 }
+
+/* INCIDENCIA ROJO */
+
+.checkIncidencia{
+width:45px;
+height:45px;
+accent-color:#ff0000;
+}
+
+.labelIncidencia{
+font-size:26px;
+color:#ff0000;
+}
+
+/* TABLA */
 
 table{
 width:100%;
@@ -84,22 +93,38 @@ width:120px;
 font-size:20px;
 }
 
-.incidenciaCol{
-width:150px;
-text-align:center;
+.checkFila{
+width:35px;
+height:35px;
+accent-color:#ff0000;
 }
 
 .firma{
 width:300px;
 height:80px;
 background:#111;
-border:2px solid #555;
+border:2px solid #00aaff;
 }
+
+/* PANEL TOTAL */
 
 .panel{
 margin-top:10px;
 padding:10px;
 background:#111;
+font-size:24px;
+}
+
+/* BOTON */
+
+button{
+width:100%;
+padding:20px;
+margin-top:10px;
+background:#003300;
+color:white;
+border:2px solid #00ff00;
+font-size:26px;
 }
 
 </style>
@@ -128,13 +153,9 @@ tabla.innerHTML+=`
 
 <td class="total">0.00</td>
 
-<td class="incidenciaCol">
-<input type="checkbox" class="checkgrande">
-</td>
+<td><input type="checkbox" class="checkFila"></td>
 
-<td>
-<div class="firma"></div>
-</td>
+<td><div class="firma"></div></td>
 
 </tr>
 
@@ -192,14 +213,16 @@ crearFilas();
 
 <h1>MONOLITO GPT PRO</h1>
 
-<div class="panel">
+<div class="barraSuperior">
 
-<label class="checklabel">
-<input type="checkbox" class="checkgrande"> INCIDENCIA
+<label class="labelPagado">
+<input type="checkbox" class="checkPagado">
+PAGADO
 </label>
 
-<label class="checklabel">
-<input type="checkbox" class="checkgrande"> PAGADO
+<label class="labelIncidencia">
+<input type="checkbox" class="checkIncidencia">
+INCIDENCIA
 </label>
 
 </div>
