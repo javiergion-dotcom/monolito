@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,7 +9,6 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
 getFirestore,
 collection,
@@ -30,11 +30,25 @@ appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ADMINISTRADORES */
-
 const administradores = ["5475","4544"];
 
-/* CARGAR PROVEEDORES */
+/* FECHA Y HORA */
+
+window.onload = function(){
+
+const now = new Date();
+
+document.getElementById("fecha").innerText = now.toLocaleDateString();
+
+document.getElementById("hora").innerText = now.toLocaleTimeString();
+
+cargarProveedoresSelect();
+
+crearFilas();
+
+}
+
+/* PROVEEDORES */
 
 window.cargarProveedoresSelect = async function(){
 
@@ -48,13 +62,13 @@ querySnapshot.forEach(doc=>{
 
 const data = doc.data();
 
-select.innerHTML += `<option value="${data.nombre}">${data.nombre}</option>`;
+select.innerHTML += `<option>${data.nombre}</option>`;
 
 });
 
 }
 
-/* SISTEMA CAMAREROS */
+/* CAMARERO */
 
 window.verificarCamarero = async function(){
 
@@ -80,21 +94,11 @@ nombreInput.disabled = true;
 
 }else{
 
-if(administradores.includes(codigo)){
-
-nombreInput.disabled = false;
-
-}else{
-
 nombreInput.disabled = false;
 
 }
 
 }
-
-}
-
-/* GUARDAR CAMARERO */
 
 window.guardarCamarero = async function(){
 
@@ -106,39 +110,95 @@ if(codigo=="" || nombre=="") return;
 
 await addDoc(collection(db,"camareros"),{
 
-codigo:codigo,
-nombre:nombre
+codigo,
+nombre
 
 });
 
-document.getElementById("nombreCamarero").disabled = true;
+document.getElementById("nombreCamarero").disabled=true;
 
-alert("Camarero guardado");
+alert("Guardado");
+
+}
+
+/* TABLA PEDIDO */
+
+window.crearFilas = function(){
+
+const tabla = document.getElementById("tablaPedido");
+
+tabla.innerHTML="";
+
+for(let i=0;i<20;i++){
+
+tabla.innerHTML+=`
+
+<tr>
+
+<td><input type="number" class="cantidad" oninput="calcular()"></td>
+
+<td><input type="text"></td>
+
+<td><input type="number" class="precio" oninput="calcular()"></td>
+
+<td><input type="number" class="iva" value="21" oninput="calcular()"></td>
+
+<td class="totalLinea">0.00</td>
+
+</tr>
+
+`;
+
+}
+
+}
+
+/* CALCULAR */
+
+window.calcular = function(){
+
+let subtotal=0;
+let ivaTotal=0;
+
+const filas=document.querySelectorAll("#tablaPedido tr");
+
+filas.forEach(fila=>{
+
+const cantidad=fila.querySelector(".cantidad").value || 0;
+
+const precio=fila.querySelector(".precio").value || 0;
+
+const iva=fila.querySelector(".iva").value || 0;
+
+const total=cantidad*precio;
+
+const ivaLinea=total*(iva/100);
+
+fila.querySelector(".totalLinea").innerText=total.toFixed(2);
+
+subtotal+=total;
+
+ivaTotal+=ivaLinea;
+
+});
+
+document.getElementById("subtotal").innerText=subtotal.toFixed(2);
+
+document.getElementById("ivatotal").innerText=ivaTotal.toFixed(2);
+
+document.getElementById("totalfinal").innerText=(subtotal+ivaTotal).toFixed(2);
 
 }
 
 /* NAVEGACION */
 
-window.ir = function(panel){
+window.ir=function(panel){
 
 document.getElementById("principal").style.display="none";
+
 document.getElementById("pedidos").style.display="none";
 
 document.getElementById(panel).style.display="block";
-
-if(panel=="pedidos") cargarProveedoresSelect();
-
-}
-
-/* FECHA Y HORA */
-
-window.onload = function(){
-
-const now = new Date();
-
-document.getElementById("fecha").innerText = now.toLocaleDateString();
-
-document.getElementById("hora").innerText = now.toLocaleTimeString();
 
 }
 
@@ -155,31 +215,34 @@ padding:20px;
 
 button{
 width:100%;
-padding:15px;
-margin:5px 0;
-background:linear-gradient(#333,#111);
-color:white;
-border:1px solid #555;
-border-radius:8px;
-font-size:16px;
-}
-
-input, select{
-width:100%;
 padding:12px;
 margin:5px 0;
+background:#222;
+color:white;
+border:1px solid #555;
+}
+
+input{
+width:100%;
 background:#111;
 color:white;
 border:1px solid #555;
-border-radius:6px;
-font-size:16px;
+padding:5px;
+}
+
+table{
+width:100%;
+margin-top:10px;
+}
+
+td{
+padding:4px;
 }
 
 .panel{
 background:#111;
-padding:15px;
+padding:10px;
 margin-top:10px;
-border-radius:8px;
 }
 
 </style>
@@ -229,9 +292,31 @@ Proveedor:
 
 </div>
 
+<table>
+
+<thead>
+
+<tr>
+
+<th>Pido</th>
+<th>Artículo</th>
+<th>Precio</th>
+<th>IVA %</th>
+<th>Total</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tablaPedido"></tbody>
+
+</table>
+
 <div class="panel">
 
-Sistema PEDIDOS listo.
+Subtotal: <span id="subtotal">0.00</span><br>
+IVA: <span id="ivatotal">0.00</span><br>
+TOTAL: <span id="totalfinal">0.00</span>
 
 </div>
 
