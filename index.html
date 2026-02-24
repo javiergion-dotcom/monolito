@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>MONOLITO GPT PRO</title>
-
-<script type="module">
+<title>MONOLITO GPT PRO</title><script type="module">
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -31,402 +27,165 @@ appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-
 /* ---------- NAVEGACION ---------- */
 
-window.ir = function(panel){
+window.ir=function(panel){
 
 document.getElementById("principal").style.display="none";
-document.getElementById("articulos").style.display="none";
-document.getElementById("proveedores").style.display="none";
-document.getElementById("vacaciones").style.display="none";
+document.getElementById("pedidos").style.display="none";
 
 document.getElementById(panel).style.display="block";
 
-if(panel=="articulos") cargarArticulos();
-if(panel=="proveedores") cargarProveedores();
-if(panel=="vacaciones") cargarVacaciones();
+if(panel=="pedidos") iniciarPedido();
 
 }
 
+/* ---------- PEDIDO ---------- */
 
-/* ---------- ARTICULOS ---------- */
+window.iniciarPedido=function(){
 
-window.guardarArticulo = async function(){
+const ahora = new Date();
 
-const nombre =
-document.getElementById("nombreArticulo").value.trim();
+document.getElementById("fechaPedido").value =
+ahora.toLocaleDateString();
+
+document.getElementById("horaPedido").value =
+ahora.toLocaleTimeString();
+
+}
+
+/* ---------- CALCULO ---------- */
+
+window.calcular=function(){
+
+let subtotal = 0;
+let ivaTotal = 0;
+
+for(let i=1;i<=22;i++){
+
+const pido =
+parseFloat(document.getElementById("pido"+i).value)||0;
 
 const precio =
-document.getElementById("precioArticulo").value.trim();
+parseFloat(document.getElementById("precio"+i).value)||0;
 
-if(nombre=="" || precio=="") return;
+const iva =
+parseFloat(document.getElementById("iva"+i).value)||0;
 
-await addDoc(collection(db,"articulos"),{
-nombre,
-precio,
-fecha:new Date().toISOString()
-});
+const totalLinea =
+pido*precio;
 
-document.getElementById("nombreArticulo").value="";
-document.getElementById("precioArticulo").value="";
+const ivaLinea =
+totalLinea*(iva/100);
 
-cargarArticulos();
+document.getElementById("total"+i).value =
+totalLinea.toFixed(2);
 
-}
-
-window.cargarArticulos = async function(){
-
-const lista =
-document.getElementById("listaArticulos");
-
-lista.innerHTML="";
-
-const datos =
-await getDocs(collection(db,"articulos"));
-
-datos.forEach(doc=>{
-
-const d = doc.data();
-
-if(!d.nombre) return;
-
-lista.innerHTML +=
-`<div class="item">${d.nombre} - ${d.precio} €</div>`;
-
-});
+subtotal+=totalLinea;
+ivaTotal+=ivaLinea;
 
 }
 
+document.getElementById("subtotal").value =
+subtotal.toFixed(2);
 
-/* ---------- PROVEEDORES ---------- */
+document.getElementById("ivatotal").value =
+ivaTotal.toFixed(2);
 
-window.guardarProveedor = async function(){
-
-const nombre =
-document.getElementById("nombreProveedor").value.trim();
-
-const telefono =
-document.getElementById("telefonoProveedor").value.trim();
-
-if(nombre=="") return;
-
-await addDoc(collection(db,"proveedores"),{
-nombre,
-telefono,
-fecha:new Date().toISOString()
-});
-
-document.getElementById("nombreProveedor").value="";
-document.getElementById("telefonoProveedor").value="";
-
-cargarProveedores();
+document.getElementById("totalfinal").value =
+(subtotal+ivaTotal).toFixed(2);
 
 }
 
-window.cargarProveedores = async function(){
-
-const lista =
-document.getElementById("listaProveedores");
-
-lista.innerHTML="";
-
-const datos =
-await getDocs(collection(db,"proveedores"));
-
-datos.forEach(doc=>{
-
-const d = doc.data();
-
-if(!d.nombre) return;
-
-lista.innerHTML +=
-`<div class="item">${d.nombre} - ${d.telefono || ""}</div>`;
-
-});
-
-}
-
-
-/* ---------- VACACIONES ---------- */
-
-window.guardarVacaciones = async function(){
-
-const camarero =
-document.getElementById("nombreCamarero").value.trim();
-
-if(camarero=="") return;
-
-const filas = [];
-
-for(let i=1;i<=4;i++){
-
-const desde =
-document.getElementById("desde"+i).value;
-
-const hasta =
-document.getElementById("hasta"+i).value;
-
-const dias =
-document.getElementById("dias"+i).value;
-
-if(desde || hasta || dias){
-
-filas.push({
-desde,
-hasta,
-dias
-});
-
-}
-
-}
-
-await addDoc(collection(db,"vacaciones"),{
-camarero,
-filas,
-fecha:new Date().toISOString()
-});
-
-cargarVacaciones();
-
-}
-
-
-window.cargarVacaciones = async function(){
-
-const lista =
-document.getElementById("listaVacaciones");
-
-lista.innerHTML="";
-
-const datos =
-await getDocs(collection(db,"vacaciones"));
-
-datos.forEach(doc=>{
-
-const d = doc.data();
-
-lista.innerHTML +=
-`<div class="item">${d.camarero}</div>`;
-
-});
-
-}
-
-</script>
-
-
-<style>
+</script><style>
 
 body{
-
-background:#000;
+background:black;
 color:white;
 font-family:Arial;
-margin:0;
 padding:20px;
-
-}
-
-h1{
-
-text-align:center;
-margin-bottom:30px;
-
 }
 
 .boton{
-
-background:linear-gradient(#333,#111);
-padding:18px;
-margin:10px 0;
-text-align:center;
-border-radius:8px;
-border:1px solid #555;
-
-}
-
-.boton:active{
-
-background:linear-gradient(#111,#333);
-
+background:#222;
+padding:15px;
+margin:5px 0;
+border-radius:6px;
 }
 
 input{
-
-width:100%;
-padding:12px;
-margin:5px 0;
 background:#111;
 color:white;
 border:1px solid #333;
-
-}
-
-.item{
-
-background:#111;
-padding:12px;
-margin-top:5px;
-border-left:3px solid #00ffaa;
-
-}
-
-.volver{
-
-margin-bottom:15px;
-color:#00ffaa;
-
+padding:5px;
 }
 
 .fila{
-
 display:grid;
-grid-template-columns:1fr 1fr 80px;
+grid-template-columns:2fr 60px 60px 80px 60px 80px;
 gap:5px;
+margin-bottom:3px;
+}
+
+.total{
+background:#002200;
+}
+
+</style></head><body><div id="principal"><h1>MONOLITO GPT PRO</h1><div class="boton"
+onclick="ir('pedidos')">
+PEDIDOS
+</div></div><div id="pedidos" style="display:none"><h2>Pedido</h2>Fecha:
+<input id="fechaPedido" readonly>
+
+Hora:
+<input id="horaPedido" readonly>
+
+<br><br>
+
+Camarero:
+<input id="camarero">
+
+Proveedor:
+<input id="proveedor">
+
+<br><br>
+
+<div class="fila">
+<b>Articulo</b>
+<b>Hay</b>
+<b>Pido</b>
+<b>Precio</b>
+<b>IVA</b>
+<b>Total</b>
+</div><script>
+
+for(let i=1;i<=22;i++){
+
+document.write(`
+
+<div class="fila">
+
+<input id="articulo${i}">
+<input id="hay${i}">
+<input id="pido${i}" oninput="calcular()">
+<input id="precio${i}" oninput="calcular()">
+<input id="iva${i}" value="10" oninput="calcular()">
+<input id="total${i}" class="total" readonly>
+
+</div>
+
+`);
 
 }
 
-</style>
+</script><br>Subtotal:
+<input id="subtotal" readonly>
 
-</head>
+IVA:
+<input id="ivatotal" readonly>
 
+TOTAL:
+<input id="totalfinal" readonly>
 
-<body>
-
-
-<!-- PRINCIPAL -->
-
-<div id="principal">
-
-<h1>MONOLITO GPT PRO</h1>
-
-<div class="boton" onclick="ir('articulos')">
-ARTÍCULOS
-</div>
-
-<div class="boton" onclick="ir('proveedores')">
-PROVEEDORES
-</div>
-
-<div class="boton" onclick="ir('vacaciones')">
-VACACIONES
-</div>
-
-</div>
-
-
-
-<!-- ARTICULOS -->
-
-<div id="articulos" style="display:none">
-
-<div class="volver" onclick="ir('principal')">
-← Volver
-</div>
-
-<h2>Artículos</h2>
-
-<input id="nombreArticulo" placeholder="Nombre">
-
-<input id="precioArticulo" placeholder="Precio">
-
-<div class="boton"
-onclick="guardarArticulo()">
-
-Guardar
-
-</div>
-
-<div id="listaArticulos"></div>
-
-</div>
-
-
-
-<!-- PROVEEDORES -->
-
-<div id="proveedores" style="display:none">
-
-<div class="volver" onclick="ir('principal')">
-← Volver
-</div>
-
-<h2>Proveedores</h2>
-
-<input id="nombreProveedor" placeholder="Nombre">
-
-<input id="telefonoProveedor" placeholder="Teléfono">
-
-<div class="boton"
-onclick="guardarProveedor()">
-
-Guardar
-
-</div>
-
-<div id="listaProveedores"></div>
-
-</div>
-
-
-
-<!-- VACACIONES -->
-
-<div id="vacaciones" style="display:none">
-
-<div class="volver" onclick="ir('principal')">
-← Volver
-</div>
-
-<h2>Vacaciones</h2>
-
-<input id="nombreCamarero" placeholder="Nombre camarero">
-
-<div class="fila">
-
-<input type="date" id="desde1">
-<input type="date" id="hasta1">
-<input type="number" id="dias1">
-
-</div>
-
-<div class="fila">
-
-<input type="date" id="desde2">
-<input type="date" id="hasta2">
-<input type="number" id="dias2">
-
-</div>
-
-<div class="fila">
-
-<input type="date" id="desde3">
-<input type="date" id="hasta3">
-<input type="number" id="dias3">
-
-</div>
-
-<div class="fila">
-
-<input type="date" id="desde4">
-<input type="date" id="hasta4">
-<input type="number" id="dias4">
-
-</div>
-
-<div class="boton"
-onclick="guardarVacaciones()">
-
-Guardar vacaciones
-
-</div>
-
-<div id="listaVacaciones"></div>
-
-</div>
-
-
-</body>
+</div></body>
 </html>
