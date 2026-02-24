@@ -13,117 +13,152 @@ import {
 getFirestore,
 collection,
 addDoc,
-getDocs,
-query,
-where
+getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 const firebaseConfig = {
 
 apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
-
 authDomain: "monolito-ed87d.firebaseapp.com",
-
 projectId: "monolito-ed87d",
-
 storageBucket: "monolito-ed87d.firebasestorage.app",
-
 messagingSenderId: "737849584362",
-
 appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
 
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
 
-/* ADMINISTRADORES */
+/* TABLA CAMAREROS */
 
-const admins = ["5475","4544"];
+const camareros = {
 
+"475":"JAVI",
+"312":"MARCOS",
+"128":"ANA",
+"901":"LUIS"
 
-/* DETECTAR CAMARERO */
-
-window.detectarCamarero = async function(){
-
-const codigo = document.getElementById("codigoCamarero").value.trim();
-
-if(codigo=="") return;
-
-const nombreInput = document.getElementById("nombreCamarero");
+};
 
 
-const q = query(collection(db,"camareros"), where("codigo","==",codigo));
+/* AUTOCOMPLETAR CAMARERO */
 
-const snap = await getDocs(q);
-
-
-if(!snap.empty){
-
-const data = snap.docs[0].data();
-
-nombreInput.value = data.nombre;
-
-nombreInput.disabled = true;
-
-}else{
-
-nombreInput.value = "";
-
-nombreInput.disabled = !admins.includes(codigo);
-
-}
-
-}
-
-
-/* GUARDAR CAMARERO */
-
-window.guardarCamarero = async function(){
+window.buscarCamarero = function(){
 
 const codigo = document.getElementById("codigoCamarero").value.trim();
 
-const nombre = document.getElementById("nombreCamarero").value.trim();
+const nombre = camareros[codigo] || "";
 
-if(codigo=="" || nombre=="") return;
-
-await addDoc(collection(db,"camareros"),{
-
-codigo:codigo,
-
-nombre:nombre
-
-});
-
-document.getElementById("nombreCamarero").disabled = true;
+document.getElementById("nombreCamarero").value = nombre;
 
 }
 
 
-/* CARGAR PROVEEDORES */
+/* CARGAR PROVEEDORES EN LISTA */
 
-window.cargarProveedoresSelect = async function(){
+window.cargarListaProveedores = async function(){
 
 const select = document.getElementById("proveedorPedido");
 
 select.innerHTML = "";
 
-const snap = await getDocs(collection(db,"proveedores"));
+const querySnapshot = await getDocs(collection(db,"proveedores"));
 
-snap.forEach(doc=>{
+querySnapshot.forEach(doc=>{
 
 const data = doc.data();
 
 const option = document.createElement("option");
 
 option.value = data.nombre;
-
 option.textContent = data.nombre;
 
 select.appendChild(option);
+
+});
+
+}
+
+
+/* GUARDAR PEDIDO */
+
+window.guardarPedido = async function(){
+
+const proveedor = document.getElementById("proveedorPedido").value;
+const camarero = document.getElementById("nombreCamarero").value;
+const fecha = new Date().toISOString();
+
+await addDoc(collection(db,"pedidos"),{
+
+proveedor: proveedor,
+camarero: camarero,
+fecha: fecha
+
+});
+
+alert("Pedido guardado");
+
+}
+
+
+/* PROVEEDORES */
+
+window.guardarProveedor = async function(){
+
+const nombre = document.getElementById("nombreProveedor").value.trim();
+const telefono = document.getElementById("telefonoProveedor").value.trim();
+const pago = document.getElementById("formaPago").value.trim();
+const diaPedido = document.getElementById("diaPedido").value.trim();
+const diaReparto = document.getElementById("diaReparto").value.trim();
+
+if(nombre=="") return;
+
+await addDoc(collection(db,"proveedores"),{
+
+nombre,
+telefono,
+formaPago:pago,
+diaPedido,
+diaReparto,
+fecha:new Date().toISOString()
+
+});
+
+cargarProveedores();
+
+}
+
+
+window.cargarProveedores = async function(){
+
+const lista = document.getElementById("listaProveedores");
+
+lista.innerHTML="";
+
+const querySnapshot = await getDocs(collection(db,"proveedores"));
+
+querySnapshot.forEach(doc=>{
+
+const data = doc.data();
+
+lista.innerHTML+=`
+
+<div class="item">
+
+<strong>${data.nombre}</strong><br>
+
+Pago: ${data.formaPago}<br>
+
+Pedido: ${data.diaPedido}<br>
+
+Reparto: ${data.diaReparto}
+
+</div>
+
+`;
 
 });
 
@@ -135,29 +170,15 @@ select.appendChild(option);
 window.ir = function(panel){
 
 document.getElementById("principal").style.display="none";
-
+document.getElementById("proveedores").style.display="none";
 document.getElementById("pedidos").style.display="none";
 
 document.getElementById(panel).style.display="block";
 
-if(panel=="pedidos") cargarProveedoresSelect();
+if(panel=="proveedores") cargarProveedores();
+if(panel=="pedidos") cargarListaProveedores();
 
 }
-
-
-/* FECHA Y HORA */
-
-function actualizarFechaHora(){
-
-const ahora = new Date();
-
-document.getElementById("fecha").textContent = ahora.toLocaleDateString();
-
-document.getElementById("hora").textContent = ahora.toLocaleTimeString();
-
-}
-
-setInterval(actualizarFechaHora,1000);
 
 </script>
 
@@ -167,11 +188,8 @@ setInterval(actualizarFechaHora,1000);
 body{
 
 background:black;
-
 color:white;
-
 font-family:Arial;
-
 padding:20px;
 
 }
@@ -179,49 +197,32 @@ padding:20px;
 button{
 
 width:100%;
-
 padding:15px;
-
 margin:6px 0;
-
-background:linear-gradient(#2a2a2a,#111);
-
+background:#1a1a1a;
 color:white;
-
 border:1px solid #444;
-
-border-radius:8px;
-
-font-size:18px;
-
-}
-
-input, select{
-
-width:100%;
-
-padding:12px;
-
-margin:5px 0;
-
-background:#111;
-
-color:white;
-
-border:1px solid #333;
-
+border-radius:6px;
 font-size:16px;
 
 }
 
-.panel{
+input,select{
+
+width:100%;
+padding:10px;
+margin:4px 0;
+background:#111;
+color:white;
+border:1px solid #333;
+
+}
+
+.item{
 
 background:#111;
-
 padding:10px;
-
-margin-top:10px;
-
+margin-top:5px;
 border-radius:6px;
 
 }
@@ -230,7 +231,7 @@ border-radius:6px;
 
 </head>
 
-<body onload="actualizarFechaHora()">
+<body>
 
 
 <div id="principal">
@@ -238,6 +239,8 @@ border-radius:6px;
 <h1>MONOLITO GPT PRO</h1>
 
 <button onclick="ir('pedidos')">PEDIDOS</button>
+
+<button onclick="ir('proveedores')">PROVEEDORES</button>
 
 </div>
 
@@ -247,27 +250,45 @@ border-radius:6px;
 
 <button onclick="ir('principal')">← VOLVER</button>
 
-<h2>PEDIDO</h2>
+<h2>NUEVO PEDIDO</h2>
 
+<label>Código camarero</label>
 
-<div class="panel">
+<input id="codigoCamarero" oninput="buscarCamarero()">
 
-Fecha: <span id="fecha"></span><br>
+<label>Nombre camarero</label>
 
-Hora: <span id="hora"></span>
+<input id="nombreCamarero" readonly>
+
+<label>Proveedor</label>
+
+<select id="proveedorPedido"></select>
+
+<button onclick="guardarPedido()">GUARDAR PEDIDO</button>
 
 </div>
 
 
-<input id="codigoCamarero" placeholder="Código camarero" oninput="detectarCamarero()">
 
-<input id="nombreCamarero" placeholder="Nombre camarero">
+<div id="proveedores" style="display:none">
 
-<button onclick="guardarCamarero()">GUARDAR CAMARERO</button>
+<button onclick="ir('principal')">← VOLVER</button>
 
+<h2>PROVEEDORES</h2>
 
-<select id="proveedorPedido"></select>
+<input id="nombreProveedor" placeholder="Nombre proveedor">
 
+<input id="telefonoProveedor" placeholder="Teléfono">
+
+<input id="formaPago" placeholder="Forma de pago">
+
+<input id="diaPedido" placeholder="Día de pedido">
+
+<input id="diaReparto" placeholder="Día de reparto">
+
+<button onclick="guardarProveedor()">GUARDAR</button>
+
+<div id="listaProveedores"></div>
 
 </div>
 
