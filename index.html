@@ -4,7 +4,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>MONOLITO GPT PRO</title>
 
 <script type="module">
@@ -18,14 +17,23 @@ addDoc,
 getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
 const firebaseConfig = {
+
 apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+
 authDomain: "monolito-ed87d.firebaseapp.com",
+
 projectId: "monolito-ed87d",
+
 storageBucket: "monolito-ed87d.firebasestorage.app",
+
 messagingSenderId: "737849584362",
+
 appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593",
+
 measurementId: "G-V8KHB086M3"
+
 };
 
 const app = initializeApp(firebaseConfig);
@@ -33,106 +41,84 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-/* ARTICULOS */
 
-window.guardarArticulo = async function(){
-
-const nombre = document.getElementById("nombreArticulo").value.trim();
-
-const precio = document.getElementById("precioArticulo").value.trim();
-
-if(nombre=="" || precio=="") return;
-
-await addDoc(collection(db,"articulos"),{
-
-nombre:nombre,
-precio:precio,
-fecha:new Date().toISOString()
-
-});
-
-document.getElementById("nombreArticulo").value="";
-document.getElementById("precioArticulo").value="";
-
-cargarArticulos();
-
-}
-
-
-window.cargarArticulos = async function(){
-
-const lista = document.getElementById("listaArticulos");
-
-lista.innerHTML="";
-
-const querySnapshot = await getDocs(collection(db,"articulos"));
-
-querySnapshot.forEach(doc=>{
-
-const data=doc.data();
-
-if(!data.nombre) return;
-
-lista.innerHTML+=`
-
-<div class="item">
-
-${data.nombre} - ${data.precio} €
-
-</div>
-
-`;
-
-});
-
-}
-
-
-/* PROVEEDORES */
+/* PROVEEDORES COMPLETO */
 
 window.guardarProveedor = async function(){
 
-const nombre=document.getElementById("nombreProveedor").value.trim();
+const nombre = document.getElementById("nombreProveedor").value.trim();
 
-const telefono=document.getElementById("telefonoProveedor").value.trim();
+const telefono = document.getElementById("telefonoProveedor").value.trim();
+
+const pago = document.getElementById("formaPago").value.trim();
+
+const diaPedido = document.getElementById("diaPedido").value.trim();
+
+const diaReparto = document.getElementById("diaReparto").value.trim();
+
 
 if(nombre=="") return;
+
 
 await addDoc(collection(db,"proveedores"),{
 
 nombre:nombre,
+
 telefono:telefono,
+
+formaPago:pago,
+
+diaPedido:diaPedido,
+
+diaReparto:diaReparto,
+
 fecha:new Date().toISOString()
 
 });
 
+
 document.getElementById("nombreProveedor").value="";
+
 document.getElementById("telefonoProveedor").value="";
+
+document.getElementById("formaPago").value="";
+
+document.getElementById("diaPedido").value="";
+
+document.getElementById("diaReparto").value="";
+
 
 cargarProveedores();
 
 }
 
 
+
 window.cargarProveedores = async function(){
 
-const lista=document.getElementById("listaProveedores");
+const lista = document.getElementById("listaProveedores");
 
 lista.innerHTML="";
 
-const querySnapshot=await getDocs(collection(db,"proveedores"));
+const querySnapshot = await getDocs(collection(db,"proveedores"));
 
 querySnapshot.forEach(doc=>{
 
-const data=doc.data();
+const data = doc.data();
 
-if(!data.nombre) return;
-
-lista.innerHTML+=`
+lista.innerHTML += `
 
 <div class="item">
 
-${data.nombre} - ${data.telefono || ""}
+<strong>${data.nombre}</strong><br>
+
+Tel: ${data.telefono || ""}<br>
+
+Pago: ${data.formaPago || ""}<br>
+
+Pedido: ${data.diaPedido || ""}<br>
+
+Reparto: ${data.diaReparto || ""}
 
 </div>
 
@@ -143,79 +129,22 @@ ${data.nombre} - ${data.telefono || ""}
 }
 
 
-/* VENTAS */
-
-window.verVentasMes=function(){
-
-document.getElementById("resultadoVentas").innerHTML=`
-
-<div class="item">
-
-Ventas del mes (preparado)
-
-</div>
-
-`;
-
-}
-
-window.verVentasAno=function(){
-
-document.getElementById("resultadoVentas").innerHTML=`
-
-<div class="item">
-
-Ventas del año (preparado)
-
-</div>
-
-`;
-
-}
-
-
-/* VACACIONES */
-
-window.guardarVacaciones=function(){
-
-const camarero=document.getElementById("nombreCamarero").value;
-
-if(camarero=="") return;
-
-document.getElementById("listaVacaciones").innerHTML+=`
-
-<div class="item">
-
-Vacaciones guardadas para ${camarero}
-
-</div>
-
-`;
-
-}
-
 
 /* NAVEGACION */
 
-window.ir=function(panel){
+window.ir = function(panel){
 
 document.getElementById("principal").style.display="none";
 
-document.getElementById("articulos").style.display="none";
-
 document.getElementById("proveedores").style.display="none";
-
-document.getElementById("ventas").style.display="none";
-
-document.getElementById("vacaciones").style.display="none";
 
 document.getElementById(panel).style.display="block";
 
-if(panel=="articulos") cargarArticulos();
 
 if(panel=="proveedores") cargarProveedores();
 
 }
+
 
 </script>
 
@@ -238,19 +167,17 @@ button{
 
 width:100%;
 
-padding:18px;
+padding:15px;
 
-margin:8px 0;
+margin:5px 0;
 
-background:linear-gradient(#2a2a2a,#111);
+background:#1a1a1a;
 
 color:white;
 
 border:1px solid #444;
 
-border-radius:8px;
-
-font-size:18px;
+border-radius:6px;
 
 }
 
@@ -258,9 +185,9 @@ input{
 
 width:100%;
 
-padding:12px;
+padding:10px;
 
-margin:5px 0;
+margin:4px 0;
 
 background:#111;
 
@@ -274,7 +201,7 @@ border:1px solid #333;
 
 background:#111;
 
-padding:12px;
+padding:10px;
 
 margin-top:5px;
 
@@ -282,18 +209,9 @@ border-radius:6px;
 
 }
 
-h1{
-
-text-align:center;
-
-margin-bottom:30px;
-
-}
-
 </style>
 
 </head>
-
 
 <body>
 
@@ -302,31 +220,7 @@ margin-bottom:30px;
 
 <h1>MONOLITO GPT PRO</h1>
 
-<button onclick="ir('articulos')">ARTÍCULOS</button>
-
 <button onclick="ir('proveedores')">PROVEEDORES</button>
-
-<button onclick="ir('ventas')">VENTAS</button>
-
-<button onclick="ir('vacaciones')">VACACIONES</button>
-
-</div>
-
-
-
-<div id="articulos" style="display:none">
-
-<button onclick="ir('principal')">← VOLVER</button>
-
-<h2>ARTÍCULOS</h2>
-
-<input id="nombreArticulo" placeholder="Nombre artículo">
-
-<input id="precioArticulo" placeholder="Precio">
-
-<button onclick="guardarArticulo()">GUARDAR</button>
-
-<div id="listaArticulos"></div>
 
 </div>
 
@@ -338,45 +232,23 @@ margin-bottom:30px;
 
 <h2>PROVEEDORES</h2>
 
+
 <input id="nombreProveedor" placeholder="Nombre proveedor">
 
 <input id="telefonoProveedor" placeholder="Teléfono">
 
+<input id="formaPago" placeholder="Forma de pago">
+
+<input id="diaPedido" placeholder="Día de pedido">
+
+<input id="diaReparto" placeholder="Día de reparto">
+
+
 <button onclick="guardarProveedor()">GUARDAR</button>
+
 
 <div id="listaProveedores"></div>
 
-</div>
-
-
-
-<div id="ventas" style="display:none">
-
-<button onclick="ir('principal')">← VOLVER</button>
-
-<h2>VENTAS</h2>
-
-<button onclick="verVentasMes()">VENTAS DEL MES</button>
-
-<button onclick="verVentasAno()">VENTAS DEL AÑO</button>
-
-<div id="resultadoVentas"></div>
-
-</div>
-
-
-
-<div id="vacaciones" style="display:none">
-
-<button onclick="ir('principal')">← VOLVER</button>
-
-<h2>VACACIONES</h2>
-
-<input id="nombreCamarero" placeholder="Nombre camarero">
-
-<button onclick="guardarVacaciones()">GUARDAR</button>
-
-<div id="listaVacaciones"></div>
 
 </div>
 
