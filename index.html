@@ -14,17 +14,13 @@ font-family:Arial;
 padding:10px;
 }
 
-/* BARRA SUPERIOR */
-
 .barraSuperior{
 display:flex;
-align-items:center;
 gap:60px;
 background:#111;
 padding:20px;
+align-items:center;
 }
-
-/* PAGADO VERDE */
 
 .checkPagado{
 width:45px;
@@ -32,17 +28,15 @@ height:45px;
 accent-color:#00ff00;
 }
 
-.labelPagado{
-font-size:26px;
-color:#00ff00;
-}
-
-/* INCIDENCIA ROJO */
-
 .checkIncidencia{
 width:45px;
 height:45px;
 accent-color:#ff0000;
+}
+
+.labelPagado{
+font-size:26px;
+color:#00ff00;
 }
 
 .labelIncidencia{
@@ -50,7 +44,13 @@ font-size:26px;
 color:#ff0000;
 }
 
-/* TABLA */
+select{
+font-size:22px;
+padding:5px;
+background:#111;
+color:white;
+border:1px solid #555;
+}
 
 table{
 width:100%;
@@ -68,45 +68,19 @@ td{
 padding:6px;
 }
 
-.cantidad{
-width:80px;
-font-size:20px;
-}
-
-.articulo{
-width:400px;
-font-size:20px;
-}
-
-.precio{
-width:120px;
-font-size:20px;
-}
-
-.iva{
-width:80px;
-font-size:20px;
-}
-
-.total{
-width:120px;
-font-size:20px;
-}
-
-.checkFila{
-width:35px;
-height:35px;
-accent-color:#ff0000;
-}
-
-.firma{
-width:300px;
-height:80px;
+input{
 background:#111;
-border:2px solid #00aaff;
+color:white;
+border:1px solid #555;
+font-size:20px;
+padding:5px;
 }
 
-/* PANEL TOTAL */
+.cantidad{width:80px;}
+.articulo{width:400px;}
+.precio{width:120px;}
+.iva{width:80px;}
+.total{width:120px;}
 
 .panel{
 margin-top:10px;
@@ -114,8 +88,6 @@ padding:10px;
 background:#111;
 font-size:24px;
 }
-
-/* BOTON */
 
 button{
 width:100%;
@@ -129,7 +101,70 @@ font-size:26px;
 
 </style>
 
-<script>
+<script type="module">
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+where
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey:"AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
+authDomain:"monolito-ed87d.firebaseapp.com",
+projectId:"monolito-ed87d",
+storageBucket:"monolito-ed87d.firebasestorage.app",
+messagingSenderId:"737849584362",
+appId:"1:737849584362:web:bdb3b3b9fd65425dcf8593"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let articulosProveedor=[];
+
+window.onload=async function(){
+
+await cargarProveedores();
+crearFilas();
+
+}
+
+async function cargarProveedores(){
+
+const select=document.getElementById("proveedor");
+
+const snap=await getDocs(collection(db,"proveedores"));
+
+snap.forEach(doc=>{
+select.innerHTML+=`<option>${doc.data().nombre}</option>`;
+});
+
+}
+
+window.cambiarProveedor=async function(){
+
+const proveedor=document.getElementById("proveedor").value;
+
+const q=query(collection(db,"articulos"),
+where("proveedor","==",proveedor));
+
+const snap=await getDocs(q);
+
+articulosProveedor=[];
+
+snap.forEach(doc=>{
+articulosProveedor.push(doc.data());
+});
+
+}
 
 function crearFilas(){
 
@@ -143,19 +178,24 @@ tabla.innerHTML+=`
 
 <tr>
 
-<td><input class="cantidad" oninput="calcular()"></td>
+<td>
+<input class="cantidad" oninput="calcular()">
+</td>
 
-<td><input class="articulo"></td>
+<td>
+<input class="articulo" list="listaArticulos"
+onchange="rellenarArticulo(this)">
+</td>
 
-<td><input class="precio" oninput="calcular()"></td>
+<td>
+<input class="precio" readonly>
+</td>
 
-<td><input class="iva" value="21" oninput="calcular()"></td>
+<td>
+<input class="iva" readonly>
+</td>
 
 <td class="total">0.00</td>
-
-<td><input type="checkbox" class="checkFila"></td>
-
-<td><div class="firma"></div></td>
 
 </tr>
 
@@ -165,7 +205,29 @@ tabla.innerHTML+=`
 
 }
 
-function calcular(){
+window.rellenarArticulo=function(input){
+
+const nombre=input.value;
+
+const fila=input.parentNode.parentNode;
+
+const precioInput=fila.querySelector(".precio");
+const ivaInput=fila.querySelector(".iva");
+
+const articulo=articulosProveedor.find(a=>a.nombre==nombre);
+
+if(articulo){
+
+precioInput.value=articulo.precio;
+ivaInput.value=articulo.iva;
+
+}
+
+calcular();
+
+}
+
+window.calcular=function(){
 
 let subtotal=0;
 let ivaTotal=0;
@@ -189,19 +251,8 @@ ivaTotal+=total*(iva/100);
 
 document.getElementById("subtotal").innerText=subtotal.toFixed(2);
 document.getElementById("ivatotal").innerText=ivaTotal.toFixed(2);
-document.getElementById("totalfinal").innerText=(subtotal+ivaTotal).toFixed(2);
-
-}
-
-function guardarPedido(){
-
-alert("PEDIDO GUARDADO");
-
-}
-
-window.onload=function(){
-
-crearFilas();
+document.getElementById("totalfinal").innerText=
+(subtotal+ivaTotal).toFixed(2);
 
 }
 
@@ -216,36 +267,38 @@ crearFilas();
 <div class="barraSuperior">
 
 <label class="labelPagado">
-<input type="checkbox" class="checkPagado">
-PAGADO
+<input type="checkbox" class="checkPagado"> PAGADO
 </label>
 
 <label class="labelIncidencia">
-<input type="checkbox" class="checkIncidencia">
-INCIDENCIA
+<input type="checkbox" class="checkIncidencia"> INCIDENCIA
 </label>
 
+Proveedor:
+
+<select id="proveedor" onchange="cambiarProveedor()">
+<option></option>
+</select>
+
 </div>
+
+<datalist id="listaArticulos">
+</datalist>
 
 <table>
 
 <thead>
-
 <tr>
-
 <th>Pido</th>
 <th>Artículo</th>
 <th>Precio</th>
 <th>IVA</th>
 <th>Total</th>
-<th>Incidencia</th>
-<th>Firma proveedor</th>
-
 </tr>
-
 </thead>
 
-<tbody id="tabla"></tbody>
+<tbody id="tabla">
+</tbody>
 
 </table>
 
@@ -257,7 +310,7 @@ TOTAL: <span id="totalfinal">0.00</span>
 
 </div>
 
-<button onclick="guardarPedido()">
+<button>
 GUARDAR PEDIDO
 </button>
 
