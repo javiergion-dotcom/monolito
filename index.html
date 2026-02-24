@@ -8,281 +8,175 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-
 apiKey: "AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
 authDomain: "monolito-ed87d.firebaseapp.com",
 projectId: "monolito-ed87d",
 storageBucket: "monolito-ed87d.firebasestorage.app",
 messagingSenderId: "737849584362",
 appId: "1:737849584362:web:bdb3b3b9fd65425dcf8593"
-
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* ARTICULOS */
 
-/* CAMAREROS */
+window.guardarArticulo = async function(){
 
-const camareros = {
-"475":"JAVI",
-"312":"MARCOS",
-"128":"ANA",
-"901":"LUIS"
-};
+const nombre = document.getElementById("nombreArticulo").value;
+const precio = document.getElementById("precioArticulo").value;
+const iva = document.getElementById("ivaArticulo").value;
+const proveedor = document.getElementById("proveedorArticulo").value;
 
-window.buscarCamarero = function(){
+if(nombre=="") return;
 
-const codigo = document.getElementById("codigoCamarero").value.trim();
+await addDoc(collection(db,"articulos"),{
 
-document.getElementById("nombreCamarero").value =
-camareros[codigo] || "";
+nombre,
+precio,
+iva,
+proveedor,
+fecha:new Date().toISOString()
 
-}
+});
 
-
-/* FECHA HORA */
-
-window.fechaActual = function(){
-
-const ahora = new Date();
-
-document.getElementById("fecha").value =
-ahora.toLocaleDateString();
-
-document.getElementById("hora").value =
-ahora.toLocaleTimeString();
+cargarArticulos();
 
 }
 
+window.cargarArticulos = async function(){
 
-/* CARGAR PROVEEDORES */
+const lista = document.getElementById("listaArticulos");
 
-window.cargarProveedores = async function(){
+lista.innerHTML="";
 
-const select =
-document.getElementById("proveedor");
+const datos = await getDocs(collection(db,"articulos"));
 
-select.innerHTML="";
+datos.forEach(doc=>{
 
-const snap =
-await getDocs(collection(db,"proveedores"));
+const d = doc.data();
 
-snap.forEach(doc=>{
-
-const data = doc.data();
-
-const option =
-document.createElement("option");
-
-option.value=data.nombre;
-option.textContent=data.nombre;
-
-select.appendChild(option);
+lista.innerHTML += `
+<div class="item">
+${d.nombre} | ${d.precio}€ | IVA ${d.iva}% | ${d.proveedor}
+</div>
+`;
 
 });
 
 }
 
+/* VACACIONES */
 
-/* ESTADO PEDIDO */
+window.guardarVacaciones = async function(){
 
-let estadoPagado=false;
-let estadoIncidencia=false;
+const camarero = document.getElementById("nombreCamarero").value;
 
+if(camarero=="") return;
 
-window.togglePagado=function(){
+const filas = [];
 
-estadoPagado=!estadoPagado;
+for(let i=1;i<=4;i++){
 
-const btn =
-document.getElementById("btnPagado");
+const desde = document.getElementById("desde"+i).value;
+const hasta = document.getElementById("hasta"+i).value;
+const dias = document.getElementById("dias"+i).value;
 
-if(estadoPagado){
+if(desde || hasta || dias){
 
-btn.classList.add("verde");
-
-guardarHistorico();
-
-}else{
-
-btn.classList.remove("verde");
+filas.push({desde,hasta,dias});
 
 }
 
 }
 
+await addDoc(collection(db,"vacaciones"),{
 
-window.toggleIncidencia=function(){
+camarero,
+filas,
+fecha:new Date().toISOString()
 
-estadoIncidencia=!estadoIncidencia;
+});
 
-const btn =
-document.getElementById("btnIncidencia");
-
-const panel =
-document.getElementById("panelIncidencia");
-
-if(estadoIncidencia){
-
-btn.classList.add("rojo");
-
-panel.style.display="block";
-
-}else{
-
-btn.classList.remove("rojo");
-
-panel.style.display="none";
+cargarVacaciones();
 
 }
 
-}
+window.cargarVacaciones = async function(){
 
+const lista = document.getElementById("listaVacaciones");
 
-/* GUARDAR HISTORICO */
+lista.innerHTML="";
 
-window.guardarHistorico = async function(){
+const datos = await getDocs(collection(db,"vacaciones"));
 
-const pedido={
+datos.forEach(doc=>{
 
-fecha:
-document.getElementById("fecha").value,
+const d = doc.data();
 
-hora:
-document.getElementById("hora").value,
+lista.innerHTML += `<div class="item">Vacaciones: ${d.camarero}</div>`;
 
-camarero:
-document.getElementById("nombreCamarero").value,
-
-proveedor:
-document.getElementById("proveedor").value,
-
-pagado:estadoPagado,
-
-incidencia:estadoIncidencia,
-
-textoIncidencia:
-document.getElementById("textoIncidencia").value,
-
-acuerdo:
-document.getElementById("acuerdo").value,
-
-firma:
-document.getElementById("firma").value,
-
-timestamp:new Date().toISOString()
-
-};
-
-await addDoc(collection(db,"historico"),pedido);
-
-alert("Pedido guardado en histórico");
+});
 
 }
-
 
 /* NAVEGACION */
 
 window.ir=function(panel){
 
-document.getElementById("principal").style.display="none";
-document.getElementById("pedido").style.display="none";
+["principal","articulos","proveedores","ventas","vacaciones"].forEach(id=>{
+document.getElementById(id).style.display="none";
+});
 
 document.getElementById(panel).style.display="block";
 
-if(panel=="pedido"){
-
-fechaActual();
-cargarProveedores();
-
-}
+if(panel=="articulos") cargarArticulos();
+if(panel=="vacaciones") cargarVacaciones();
 
 }
 
 </script>
 
-
 <style>
 
 body{
-
 background:black;
 color:white;
 font-family:Arial;
 padding:20px;
-
 }
-
 
 button{
-
 width:100%;
 padding:15px;
-margin:5px 0;
-background:#222;
-color:white;
-border:1px solid #555;
-font-size:18px;
-
-}
-
-
-.estado{
-
-width:48%;
-display:inline-block;
-padding:20px;
-text-align:center;
-border:2px solid white;
 margin:5px;
-font-weight:bold;
-
-}
-
-
-.verde{
-
-background:green;
-
-}
-
-
-.rojo{
-
-background:red;
-
-}
-
-
-textarea{
-
-width:100%;
-height:80px;
 background:#111;
 color:white;
 border:1px solid #333;
-
 }
 
-
-input,select{
-
+input{
 width:100%;
 padding:10px;
+margin:3px;
 background:#111;
 color:white;
 border:1px solid #333;
+}
 
+.item{
+background:#222;
+padding:10px;
+margin:5px;
+}
+
+.fila{
+display:grid;
+grid-template-columns:1fr 1fr 80px;
+gap:5px;
 }
 
 </style>
@@ -291,94 +185,74 @@ border:1px solid #333;
 
 <body>
 
-
 <div id="principal">
 
 <h1>MONOLITO GPT PRO</h1>
 
-<button onclick="ir('pedido')">
-NUEVO PEDIDO
-</button>
+<button onclick="ir('articulos')">ARTÍCULOS</button>
+<button onclick="ir('ventas')">VENTAS</button>
+<button onclick="ir('vacaciones')">VACACIONES</button>
 
 </div>
 
+<div id="articulos" style="display:none">
 
-<div id="pedido" style="display:none">
+<button onclick="ir('principal')">VOLVER</button>
 
-<button onclick="ir('principal')">
-← VOLVER
-</button>
+<input id="nombreArticulo" placeholder="Nombre artículo">
+<input id="precioArticulo" placeholder="Precio compra">
+<input id="ivaArticulo" placeholder="IVA %">
+<input id="proveedorArticulo" placeholder="Proveedor">
 
+<button onclick="guardarArticulo()">Guardar</button>
 
-Fecha
-<input id="fecha" readonly>
-
-Hora
-<input id="hora" readonly>
-
-
-Código camarero
-<input id="codigoCamarero"
-oninput="buscarCamarero()">
-
-
-Nombre camarero
-<input id="nombreCamarero" readonly>
-
-
-Proveedor
-<select id="proveedor"></select>
-
-
-<br><br>
-
-
-<div>
-
-<div id="btnPagado"
-class="estado"
-onclick="togglePagado()">
-
-PAGADO
+<div id="listaArticulos"></div>
 
 </div>
 
+<div id="ventas" style="display:none">
 
-<div id="btnIncidencia"
-class="estado"
-onclick="toggleIncidencia()">
+<button onclick="ir('principal')">VOLVER</button>
 
-INCIDENCIA
-
-</div>
+Ventas preparadas
 
 </div>
 
+<div id="vacaciones" style="display:none">
 
-<div id="panelIncidencia"
-style="display:none;">
+<button onclick="ir('principal')">VOLVER</button>
 
+<input id="nombreCamarero" placeholder="Nombre camarero">
 
-Incidencia
-
-<textarea id="textoIncidencia"></textarea>
-
-
-Acuerdo
-
-<textarea id="acuerdo"></textarea>
-
-
-Firma proveedor
-
-<input id="firma">
-
-
+<div class="fila">
+<input id="desde1" type="date">
+<input id="hasta1" type="date">
+<input id="dias1" placeholder="días">
 </div>
 
-
+<div class="fila">
+<input id="desde2" type="date">
+<input id="hasta2" type="date">
+<input id="dias2">
 </div>
 
+<div class="fila">
+<input id="desde3" type="date">
+<input id="hasta3" type="date">
+<input id="dias3">
+</div>
+
+<div class="fila">
+<input id="desde4" type="date">
+<input id="hasta4" type="date">
+<input id="dias4">
+</div>
+
+<button onclick="guardarVacaciones()">Guardar vacaciones</button>
+
+<div id="listaVacaciones"></div>
+
+</div>
 
 </body>
 </html>
