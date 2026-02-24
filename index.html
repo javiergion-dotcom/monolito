@@ -1,58 +1,114 @@
-<script type="module">
+// GUARDAR PEDIDO COMPLETO
 
-// ... Firebase igual que antes ...
+import {
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-window.rellenarArticulo=function(input){
+window.guardarPedido = async function(){
 
-const nombre=input.value;
+try{
 
-const fila=input.parentNode.parentNode;
+const proveedor =
+document.getElementById("proveedor").value;
 
-const precioInput=fila.querySelector(".precio");
-const ivaInput=fila.querySelector(".iva");
-const cantidadInput=fila.querySelector(".cantidad");
+if(!proveedor){
 
-const articulo=
-articulosProveedor.find(a=>a.nombre==nombre);
-
-if(articulo){
-
-precioInput.value=articulo.precio;
-ivaInput.value=articulo.iva;
-
-// SALTO AUTOMATICO A CANTIDAD
-cantidadInput.focus();
-cantidadInput.select();
+alert("Selecciona proveedor");
+return;
 
 }
 
-calcular();
+const pagado =
+document.querySelector(".checkPagado").checked;
 
-};
+const incidencia =
+document.querySelector(".checkIncidencia").checked;
 
-// SALTO AUTOMATICO A SIGUIENTE FILA
-window.addEventListener("keydown",function(e){
+const filas =
+document.querySelectorAll("#tabla tr");
 
-if(e.key==="Enter"){
+let lineas=[];
 
-const active=document.activeElement;
+filas.forEach(fila=>{
 
-if(active.classList.contains("cantidad")){
+const cantidad =
+fila.querySelector(".cantidad").value;
 
-e.preventDefault();
+const articulo =
+fila.querySelector(".articulo").value;
 
-const fila=active.closest("tr");
-const siguiente=fila.nextElementSibling;
+const precio =
+fila.querySelector(".precio").value;
 
-if(siguiente){
+const iva =
+fila.querySelector(".iva").value;
 
-siguiente.querySelector(".articulo").focus();
+if(articulo && cantidad){
 
-}
+lineas.push({
 
-}
+articulo: articulo,
+cantidad: Number(cantidad),
+precio: Number(precio),
+iva: Number(iva)
+
+});
 
 }
 
 });
-</script>
+
+if(lineas.length==0){
+
+alert("Pedido vacío");
+return;
+
+}
+
+const subtotal =
+Number(document.getElementById("subtotal").innerText);
+
+const ivatotal =
+Number(document.getElementById("ivatotal").innerText);
+
+const total =
+Number(document.getElementById("totalfinal").innerText);
+
+await addDoc(collection(db,"pedidos"),{
+
+fecha: new Date().toISOString(),
+
+proveedor: proveedor,
+
+pagado: pagado,
+
+incidencia: incidencia,
+
+lineas: lineas,
+
+subtotal: subtotal,
+
+iva: ivatotal,
+
+total: total
+
+});
+
+alert("PEDIDO GUARDADO");
+
+// LIMPIAR PANTALLA
+
+crearFilas();
+
+document.getElementById("subtotal").innerText="0.00";
+document.getElementById("ivatotal").innerText="0.00";
+document.getElementById("totalfinal").innerText="0.00";
+
+}catch(e){
+
+alert("Error al guardar");
+
+}
+
+};
