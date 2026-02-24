@@ -1,214 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MONOLITO GPT PRO</title>
-
-<style>
-
-body{
-background:black;
-color:white;
-font-family:Arial;
-padding:10px;
-}
-
-.barraSuperior{
-display:flex;
-gap:60px;
-background:#111;
-padding:20px;
-align-items:center;
-}
-
-.checkPagado{
-width:45px;
-height:45px;
-accent-color:#00ff00;
-}
-
-.checkIncidencia{
-width:45px;
-height:45px;
-accent-color:#ff0000;
-}
-
-.labelPagado{
-font-size:26px;
-color:#00ff00;
-}
-
-.labelIncidencia{
-font-size:26px;
-color:#ff0000;
-}
-
-select,input{
-font-size:20px;
-padding:5px;
-background:#111;
-color:white;
-border:1px solid #555;
-}
-
-table{
-width:100%;
-margin-top:10px;
-border-collapse:collapse;
-}
-
-th{
-border-bottom:2px solid #555;
-padding:10px;
-font-size:20px;
-}
-
-td{
-padding:6px;
-}
-
-.cantidad{width:80px;}
-.articulo{width:400px;}
-.precio{width:120px;}
-.iva{width:80px;}
-
-.panel{
-margin-top:10px;
-padding:10px;
-background:#111;
-font-size:24px;
-}
-
-button{
-width:100%;
-padding:20px;
-margin-top:10px;
-background:#003300;
-color:white;
-border:2px solid #00ff00;
-font-size:26px;
-}
-
-</style>
-
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-getDocs,
-query,
-where
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig={
-apiKey:"AIzaSyAxbU-eWFeKfBSMfwq8sJikpnbE8sOtr-s",
-authDomain:"monolito-ed87d.firebaseapp.com",
-projectId:"monolito-ed87d",
-storageBucket:"monolito-ed87d.firebasestorage.app",
-messagingSenderId:"737849584362",
-appId:"1:737849584362:web:bdb3b3b9fd65425dcf8593"
-};
-
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
-
-let articulosProveedor=[];
-
-window.onload=async function(){
-
-await cargarProveedores();
-crearFilas();
-
-};
-
-async function cargarProveedores(){
-
-const select=document.getElementById("proveedor");
-
-const snap=await getDocs(collection(db,"proveedores"));
-
-snap.forEach(doc=>{
-select.innerHTML+=
-`<option>${doc.data().nombre}</option>`;
-});
-
-}
-
-window.cambiarProveedor=async function(){
-
-const proveedor=document.getElementById("proveedor").value;
-
-const lista=document.getElementById("listaArticulos");
-
-lista.innerHTML="";
-
-const q=query(
-collection(db,"articulos"),
-where("proveedor","==",proveedor)
-);
-
-const snap=await getDocs(q);
-
-articulosProveedor=[];
-
-snap.forEach(doc=>{
-
-const data=doc.data();
-
-articulosProveedor.push(data);
-
-lista.innerHTML+=
-`<option value="${data.nombre}">`;
-
-});
-
-};
-
-function crearFilas(){
-
-const tabla=document.getElementById("tabla");
-
-tabla.innerHTML="";
-
-for(let i=0;i<15;i++){
-
-tabla.innerHTML+=`
-
-<tr>
-
-<td>
-<input class="cantidad" oninput="calcular()">
-</td>
-
-<td>
-<input class="articulo"
-list="listaArticulos"
-onchange="rellenarArticulo(this)">
-</td>
-
-<td>
-<input class="precio" readonly>
-</td>
-
-<td>
-<input class="iva" readonly>
-</td>
-
-<td class="total">0.00</td>
-
-</tr>
-
-`;
-
-}
-
-}
+// ... Firebase igual que antes ...
 
 window.rellenarArticulo=function(input){
 
@@ -218,6 +10,7 @@ const fila=input.parentNode.parentNode;
 
 const precioInput=fila.querySelector(".precio");
 const ivaInput=fila.querySelector(".iva");
+const cantidadInput=fila.querySelector(".cantidad");
 
 const articulo=
 articulosProveedor.find(a=>a.nombre==nombre);
@@ -227,104 +20,39 @@ if(articulo){
 precioInput.value=articulo.precio;
 ivaInput.value=articulo.iva;
 
+// SALTO AUTOMATICO A CANTIDAD
+cantidadInput.focus();
+cantidadInput.select();
+
 }
 
 calcular();
 
 };
 
-window.calcular=function(){
+// SALTO AUTOMATICO A SIGUIENTE FILA
+window.addEventListener("keydown",function(e){
 
-let subtotal=0;
-let ivaTotal=0;
+if(e.key==="Enter"){
 
-const filas=document.querySelectorAll("#tabla tr");
+const active=document.activeElement;
 
-filas.forEach(fila=>{
+if(active.classList.contains("cantidad")){
 
-const cantidad=fila.querySelector(".cantidad").value||0;
-const precio=fila.querySelector(".precio").value||0;
-const iva=fila.querySelector(".iva").value||0;
+e.preventDefault();
 
-const total=cantidad*precio;
+const fila=active.closest("tr");
+const siguiente=fila.nextElementSibling;
 
-fila.querySelector(".total").innerText=
-total.toFixed(2);
+if(siguiente){
 
-subtotal+=total;
-ivaTotal+=total*(iva/100);
+siguiente.querySelector(".articulo").focus();
+
+}
+
+}
+
+}
 
 });
-
-document.getElementById("subtotal").innerText=
-subtotal.toFixed(2);
-
-document.getElementById("ivatotal").innerText=
-ivaTotal.toFixed(2);
-
-document.getElementById("totalfinal").innerText=
-(subtotal+ivaTotal).toFixed(2);
-
-};
-
 </script>
-
-</head>
-
-<body>
-
-<h1>MONOLITO GPT PRO</h1>
-
-<div class="barraSuperior">
-
-<label class="labelPagado">
-<input type="checkbox" class="checkPagado"> PAGADO
-</label>
-
-<label class="labelIncidencia">
-<input type="checkbox" class="checkIncidencia"> INCIDENCIA
-</label>
-
-Proveedor:
-
-<select id="proveedor"
-onchange="cambiarProveedor()">
-<option></option>
-</select>
-
-</div>
-
-<datalist id="listaArticulos"></datalist>
-
-<table>
-
-<thead>
-
-<tr>
-<th>Pido</th>
-<th>Artículo</th>
-<th>Precio</th>
-<th>IVA</th>
-<th>Total</th>
-</tr>
-
-</thead>
-
-<tbody id="tabla"></tbody>
-
-</table>
-
-<div class="panel">
-
-Subtotal: <span id="subtotal">0.00</span><br>
-IVA: <span id="ivatotal">0.00</span><br>
-TOTAL: <span id="totalfinal">0.00</span>
-
-</div>
-
-<button>
-GUARDAR PEDIDO
-</button>
-
-</body>
-</html>
