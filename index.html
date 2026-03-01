@@ -1,11 +1,24 @@
-<script>
-fetch('carmen-system.txt')
-  .then(response => response.text())
-  .then(text => {
-    document.getElementById('alma').textContent = text;
-  });
-</script>body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Carmen</title>
+</head>
+
+<body>
+
 <div id="carmen">
-  <h2>Carmen</h2>
-  <pre id="alma"></pre>
+<h2>Carmen</h2>
+<pre id="alma"></pre>
 </div>
+
+<script>
+fetch("carmen-system.txt")
+.then(response => response.text())
+.then(text => {
+  document.getElementById("alma").textContent = text;
+});
+</script>
+
+</body>
+</html>
