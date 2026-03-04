@@ -1,14 +1,89 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Programa Monolito</title>
-</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONOLITO GPT PRO</title><style>
 
-<body>
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#f4f4f4;
+}
 
-<h1>EL PROGRAMA FUNCIONA</h1>
-<p>Has entrado correctamente desde el botón.</p>
+header{
+background:#9a7a5a;
+color:white;
+padding:25px;
+text-align:center;
+}
 
-</body>
+header h1{
+margin:0;
+font-size:28px;
+}
+
+header p{
+margin:5px 0 0 0;
+font-size:14px;
+}
+
+.container{
+padding:30px;
+max-width:900px;
+margin:auto;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.button{
+background:#e9e4de;
+border-radius:12px;
+padding:20px;
+text-align:center;
+font-size:18px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.button:hover{
+background:#ded7cf;
+}
+
+footer{
+text-align:center;
+font-size:12px;
+margin-top:30px;
+color:#666;
+}
+
+</style></head><body><header>
+<h1>MONOLITO GPT PRO</h1>
+<p>Sistema de control profesional · Cafetería El Monolito</p>
+</header><div class="container"><div class="grid"><div class="button" onclick="abrir('ventas')">
+Ventas diarias
+</div><div class="button" onclick="abrir('diario')">
+Diario del bar
+</div><div class="button" onclick="abrir('proveedores')">
+Proveedores y pedidos
+</div><div class="button" onclick="abrir('documentos')">
+Documentos
+</div><div class="button" onclick="abrir('comparador')">
+Comparador de precios
+</div><div class="button" onclick="abrir('articulos')">
+Artículos
+</div></div><footer>
+Diseño MONOLITO GPT PRO · Paleta oficial
+</footer></div><script>
+
+function abrir(seccion){
+
+alert("Sección: " + seccion + " (en desarrollo)");
+
+}
+
+</script></body>
 </html>
